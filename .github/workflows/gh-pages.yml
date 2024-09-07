@@ -1,0 +1,45 @@
+name: Parse and Deploy
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 7 * * *'
+
+jobs:
+  gh-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Gleam
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: "27.0.1"
+          gleam-version: "1.4.1"
+          rebar3-version: "3"
+      
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
+      
+      - name: Download dependencies
+        run: gleam deps download
+      
+      - name: Run script
+        run: gleam run
+        env:
+          CHROBOT_BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+
+      - name: List files in priv/static
+        run: ls -la priv/static
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./priv/static
+          publish_branch: gh-pages
+          force_orphan: true
+          publish_user_name: 'github-actions[bot]'
+          publish_user_email: 'github-actions[bot]@users.noreply.github.com'
+          publish_commit_message: 'Update from GitHub Actions'
