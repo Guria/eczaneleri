@@ -3,6 +3,8 @@ import chrobot/chrome
 import chrobot/protocol/runtime
 import eczaneleri/common/types.{type Eczane, type Position, Eczane, Position}
 import eczaneleri/common/utils
+import gleam/int
+import gleam/io
 import gleam/list
 import gleam/option.{type Option, None}
 import gleam/result
@@ -10,7 +12,9 @@ import gleam/result
 pub fn parse_eczaneleri(
   page: chrobot.Page,
 ) -> Result(List(Eczane), chrome.RequestError) {
+  io.println("Starting to parse eczaneleri")
   use container <- result.try(chrobot.await_selector(page, ".acilistaGizle"))
+  io.println("Found main container")
   use ilce_container <- result.try(chrobot.select_all_from(
     page,
     container,
@@ -20,6 +24,7 @@ pub fn parse_eczaneleri(
   ilce_container
   |> list.try_map(fn(ilce) {
     use ilce_name <- result.try(parse_ilce_name(page, ilce))
+    io.println("Parsing ilce: " <> ilce_name)
     use eczane_container <- result.try(chrobot.select_all_from(
       page,
       ilce,
@@ -44,6 +49,12 @@ pub fn parse_eczaneleri(
     })
   })
   |> result.map(list.flatten)
+  |> result.map(fn(eczaneler) {
+    io.println(
+      "Parsed " <> int.to_string(list.length(eczaneler)) <> " eczaneler",
+    )
+    eczaneler
+  })
 }
 
 fn parse_ilce_name(
