@@ -9,7 +9,7 @@ jobs:
   gh-pages:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       
       - name: Set up Gleam
         uses: erlef/setup-beam@v1
@@ -30,9 +30,6 @@ jobs:
         env:
           CHROBOT_BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
-      - name: List files in priv/static
-        run: ls -la priv/static
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -40,6 +37,6 @@ jobs:
           publish_dir: ./priv/static
           publish_branch: gh-pages
           force_orphan: true
-          publish_user_name: 'github-actions[bot]'
-          publish_user_email: 'github-actions[bot]@users.noreply.github.com'
-          publish_commit_message: 'Update from GitHub Actions'
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Update from GitHub Actions'
