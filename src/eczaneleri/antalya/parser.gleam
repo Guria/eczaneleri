@@ -72,7 +72,7 @@ fn parse_eczane_name(
   use eczane_name_element <- result.try(chrobot.select_from(
     page,
     eczane,
-    "div:first-child>div>a:first-child",
+    ".nobetciDiv>div:first-child>div>a:first-child",
   ))
   chrobot.get_text(page, eczane_name_element)
 }
@@ -84,7 +84,7 @@ fn parse_eczane_tel(
   use eczane_tel_element <- result.try(chrobot.select_from(
     page,
     eczane,
-    "div:first-child>div>a:last-child",
+    ".nobetciDiv>div:first-child>div>a:last-child",
   ))
   chrobot.get_text(page, eczane_tel_element)
 }
@@ -96,7 +96,7 @@ fn parse_eczane_adres(
   use eczane_adres_element <- result.try(chrobot.select_from(
     page,
     eczane,
-    "div:last-child>div",
+    ".nobetciDiv>div:last-child>div",
   ))
   chrobot.get_text(page, eczane_adres_element)
 }
@@ -105,7 +105,7 @@ fn parse_coordinates(
   page: chrobot.Page,
   eczane: runtime.RemoteObjectId,
 ) -> Result(Option(Position), chrome.RequestError) {
-  case chrobot.select_from(page, eczane, "div:last-child>div>a") {
+  case chrobot.select_from(page, eczane, ".nobetciDiv>div:last-child>div>a") {
     Ok(link_element) -> {
       case chrobot.get_attribute(page, link_element, "href") {
         Ok(href) -> Ok(utils.parse_coordinates_from_google_maps_link(href))
