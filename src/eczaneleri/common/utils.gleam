@@ -37,3 +37,14 @@ pub fn parse_coordinates_from_google_maps_link(href: String) -> Option(Position)
     _ -> None
   }
 }
+
+pub fn osm_link(coords: Position) -> String {
+  "https://www.openstreetmap.org/?mlat="
+  <> float.to_string(coords.latitude)
+  <> "&mlon="
+  <> float.to_string(coords.longitude)
+  <> "#map=17/"
+  <> float.to_string(coords.latitude)
+  <> "/"
+  <> float.to_string(coords.longitude)
+}

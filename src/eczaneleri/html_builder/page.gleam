@@ -164,6 +164,7 @@ fn eczane_map_links(coordinates: option.Option(Position)) {
       html.div(sketch.class([sketch.display("flex"), sketch.gap(px(10))]), [], [
         map_link("Google Maps", utils.google_maps_link(coords)),
         map_link("Yandex Maps", utils.yandex_maps_link(coords)),
+        map_link("OpenStreetMap", utils.osm_link(coords)),
       ])
     }
     None -> html.text("")
