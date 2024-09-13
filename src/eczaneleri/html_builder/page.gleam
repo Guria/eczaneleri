@@ -164,7 +164,7 @@ fn eczane_map_links(eczane: Eczane) {
       html.div(sketch.class([sketch.display("flex"), sketch.gap(px(10))]), [], [
         map_link("Google Maps", utils.google_maps_link(coords), False),
         map_link("Yandex Maps", utils.yandex_maps_link(coords), False),
-        map_link("OpenStreetMap", utils.osm_link(coords), False),
+        map_link("OSM", utils.osm_link(coords), False),
       ])
     }
     None -> {
@@ -172,7 +172,7 @@ fn eczane_map_links(eczane: Eczane) {
       html.div(sketch.class([sketch.display("flex"), sketch.gap(px(10))]), [], [
         map_link("Google Maps", utils.google_maps_text_search(query), True),
         map_link("Yandex Maps", utils.yandex_maps_text_search(query), True),
-        map_link("OpenStreetMap", utils.osm_text_search(query), True),
+        map_link("OSM", utils.osm_text_search(query), True),
       ])
     }
   }
