@@ -3,6 +3,7 @@ import gleam/float
 import gleam/option.{type Option, None, Some}
 import gleam/regex
 import gleam/result
+import gleam/string
 import gleam/uri
 
 pub fn google_maps_link(coords: Position) -> String {
@@ -61,4 +62,20 @@ pub fn yandex_maps_text_search(query: String) -> String {
 
 pub fn osm_text_search(query: String) -> String {
   "https://www.openstreetmap.org/search?query=" <> uri.percent_encode(query)
+}
+
+pub fn whatsapp_link(phone: String) -> String {
+  let assert Ok(regex) =
+    regex.compile(
+      "[^0-9]",
+      with: regex.Options(case_insensitive: False, multi_line: False),
+    )
+  let cleaned_phone = regex.replace(regex, phone, "")
+
+  let whatsapp_phone = case string.starts_with(cleaned_phone, "90") {
+    True -> cleaned_phone
+    False -> "90" <> cleaned_phone
+  }
+
+  "https://wa.me/" <> whatsapp_phone
 }

@@ -111,7 +111,10 @@ fn eczane_card(eczane: Eczane) {
       html.div(
         sketch.class([sketch.flex("1"), sketch.margin_bottom(px(10))]),
         [],
-        [eczane_address(eczane.address), eczane_phone(eczane.phone)],
+        [
+          eczane_address(eczane.address),
+          eczane_phone_and_whatsapp(eczane.phone),
+        ],
       ),
       eczane_map_links(eczane),
     ],
@@ -143,12 +146,15 @@ fn eczane_address(address: String) {
   )
 }
 
-fn eczane_phone(phone: String) {
+fn eczane_phone_and_whatsapp(phone: String) {
   html.p(
     sketch.class([
       sketch.margin(px(0)),
       sketch.margin_bottom(px(5)),
       sketch.color("#34495e"),
+      sketch.display("flex"),
+      sketch.align_items("center"),
+      sketch.gap(px(10)),
     ]),
     [],
     [
@@ -160,6 +166,20 @@ fn eczane_phone(phone: String) {
         ]),
         [attribute.href("tel:" <> phone)],
         [html.text(phone)],
+      ),
+      html.a(
+        sketch.class([
+          sketch.color("#25D366"),
+          sketch.text_decoration("none"),
+          sketch.transition("color 0.3s"),
+          sketch.font_size(px(14)),
+          sketch.padding_block(px(2)),
+          sketch.padding_inline(px(6)),
+          sketch.border("1px solid #25D366"),
+          sketch.border_radius(px(4)),
+        ]),
+        [attribute.href(utils.whatsapp_link(phone))],
+        [html.text("WhatsApp")],
       ),
     ],
   )
@@ -209,9 +229,7 @@ fn map_link(text: String, url: String, is_text_search: Bool) {
       sketch.padding_inline(px(8)),
       sketch.background_color(case is_text_search {
         True -> "#e74c3c"
-        // Red color for text search links
         False -> "#3498db"
-        // Original blue color for coordinate-based links
       }),
       sketch.color("#fff"),
       sketch.text_decoration("none"),
