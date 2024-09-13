@@ -40,8 +40,12 @@ fn open_page(browser, url) {
 
 fn write_html(html) {
   io.println("Writing html")
-  simplifile.write("./priv/static/index.html", html)
-  |> map_error_to_snag("Failed to write html")
+  simplifile.create_directory_all("./priv/static")
+  |> map_error_to_snag("Failed to create directory")
+  |> result.try(fn(_) {
+    simplifile.write("./priv/static/index.html", html)
+    |> map_error_to_snag("Failed to write html")
+  })
 }
 
 fn defer_quit(browser, body: fn() -> Result(_, snag.Snag)) {
