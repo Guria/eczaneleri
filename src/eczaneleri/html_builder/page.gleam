@@ -22,6 +22,10 @@ fn view(province: String, grouped_eczaneleri: List(#(String, List(Eczane)))) {
   html.html([], [
     html.head([], [
       html.meta([attribute.accept_charset(["utf-8"])]),
+      html.meta([
+        attribute.name("viewport"),
+        attribute.attribute("content", "width=device-width, initial-scale=1.0"),
+      ]),
       html.title([], province <> " Eczaneleri"),
     ]),
     html.body(body_styles(), [], [main_container(province, grouped_eczaneleri)]),
@@ -33,7 +37,8 @@ fn body_styles() {
     sketch.font_family("Arial, sans-serif"),
     sketch.background_color("#f0f0f0"),
     sketch.margin(px(0)),
-    sketch.padding(px(20)),
+    sketch.padding(px(10)),
+    sketch.font_size(px(16)),
   ])
 }
 
@@ -42,7 +47,11 @@ fn main_container(
   grouped_eczaneleri: List(#(String, List(Eczane))),
 ) {
   html.div(
-    sketch.class([sketch.max_width(px(1200)), sketch.margin_("auto")]),
+    sketch.class([
+      sketch.max_width(px(1200)),
+      sketch.margin_("auto"),
+      sketch.padding(px(10)),
+    ]),
     [],
     [page_title(province), district_list(grouped_eczaneleri)],
   )
@@ -50,7 +59,12 @@ fn main_container(
 
 fn page_title(province: String) {
   html.h1(
-    sketch.class([sketch.text_align("center"), sketch.color("#333")]),
+    sketch.class([
+      sketch.text_align("center"),
+      sketch.color("#333"),
+      sketch.font_size(px(24)),
+      sketch.margin_bottom(px(20)),
+    ]),
     [],
     [html.text(province <> " Nöbetçi Eczaneleri")],
   )
@@ -58,7 +72,7 @@ fn page_title(province: String) {
 
 fn district_list(grouped_eczaneleri: List(#(String, List(Eczane)))) {
   html.div(
-    sketch.class([sketch.margin_top(px(30))]),
+    sketch.class([sketch.margin_top(px(20))]),
     [],
     list.map(grouped_eczaneleri, fn(group) {
       let #(district, eczaneler) = group
@@ -74,7 +88,8 @@ fn district_title(district: String) {
       sketch.color("#2c3e50"),
       sketch.border_bottom("2px solid #3498db"),
       sketch.padding_bottom(px(10)),
-      sketch.margin_bottom(px(20)),
+      sketch.margin_bottom(px(15)),
+      sketch.font_size(px(20)),
     ]),
     [],
     [html.text(district)],
@@ -85,8 +100,8 @@ fn eczane_grid(eczaneler: List(Eczane)) {
   html.div(
     sketch.class([
       sketch.display("grid"),
-      sketch.grid_template_columns("repeat(auto-fill, minmax(300px, 1fr))"),
-      sketch.gap(px(20)),
+      sketch.grid_template_columns("repeat(auto-fill, minmax(280px, 1fr))"),
+      sketch.gap(px(15)),
       sketch.margin_bottom(px(30)),
     ]),
     [],
@@ -100,10 +115,10 @@ fn eczane_card(eczane: Eczane) {
       sketch.background_color("#fff"),
       sketch.border_radius(px(8)),
       sketch.box_shadow("0 2px 4px rgba(0, 0, 0, 0.1)"),
-      sketch.padding(px(20)),
+      sketch.padding(px(15)),
       sketch.display("flex"),
       sketch.flex_direction("column"),
-      sketch.height(px(150)),
+      sketch.min_height(px(180)),
     ]),
     [],
     [
@@ -122,7 +137,7 @@ fn eczane_card(eczane: Eczane) {
 }
 
 fn eczane_name(name: String) {
-  html.h2(
+  html.h3(
     sketch.class([
       sketch.font_size(px(18)),
       sketch.margin_top(px(0)),
@@ -140,6 +155,7 @@ fn eczane_address(address: String) {
       sketch.margin(px(0)),
       sketch.margin_bottom(px(5)),
       sketch.color("#34495e"),
+      sketch.font_size(px(14)),
     ]),
     [],
     [html.text(address)],
@@ -153,6 +169,7 @@ fn eczane_phone_and_whatsapp(phone: String) {
       sketch.margin_bottom(px(5)),
       sketch.color("#34495e"),
       sketch.display("flex"),
+      sketch.flex_wrap("wrap"),
       sketch.align_items("center"),
       sketch.gap(px(10)),
     ]),
@@ -163,6 +180,7 @@ fn eczane_phone_and_whatsapp(phone: String) {
           sketch.color("#3498db"),
           sketch.text_decoration("none"),
           sketch.transition("color 0.3s"),
+          sketch.font_size(px(16)),
         ]),
         [attribute.href("tel:" <> phone)],
         [html.text(phone)],
@@ -191,8 +209,9 @@ fn eczane_map_links(eczane: Eczane) {
       html.div(
         sketch.class([
           sketch.display("flex"),
+          sketch.flex_wrap("wrap"),
           sketch.gap(px(10)),
-          sketch.justify_content("flex-end"),
+          sketch.justify_content("flex-start"),
         ]),
         [],
         [
@@ -207,8 +226,9 @@ fn eczane_map_links(eczane: Eczane) {
       html.div(
         sketch.class([
           sketch.display("flex"),
+          sketch.flex_wrap("wrap"),
           sketch.gap(px(10)),
-          sketch.justify_content("flex-end"),
+          sketch.justify_content("flex-start"),
         ]),
         [],
         [
@@ -225,8 +245,8 @@ fn map_link(text: String, url: String, is_text_search: Bool) {
   html.a(
     sketch.class([
       sketch.display("inline-block"),
-      sketch.padding_block(px(4)),
-      sketch.padding_inline(px(8)),
+      sketch.padding_block(px(6)),
+      sketch.padding_inline(px(10)),
       sketch.background_color(case is_text_search {
         True -> "#e74c3c"
         False -> "#3498db"
