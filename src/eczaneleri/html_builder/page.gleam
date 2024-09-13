@@ -19,17 +19,25 @@ pub fn build_page(
 }
 
 fn view(province: String, grouped_eczaneleri: List(#(String, List(Eczane)))) {
-  html.html([], [
-    html.head([], [
-      html.meta([attribute.accept_charset(["utf-8"])]),
-      html.meta([
-        attribute.name("viewport"),
-        attribute.attribute("content", "width=device-width, initial-scale=1.0"),
-      ]),
-      html.title([], province <> " Eczaneleri"),
+  html.html([], [build_head(province), build_body(province, grouped_eczaneleri)])
+}
+
+fn build_head(province: String) {
+  html.head([], [
+    html.meta([attribute.accept_charset(["utf-8"])]),
+    html.meta([
+      attribute.name("viewport"),
+      attribute.attribute("content", "width=device-width, initial-scale=1.0"),
     ]),
-    html.body(body_styles(), [], [main_container(province, grouped_eczaneleri)]),
+    html.title([], province <> " Eczaneleri"),
   ])
+}
+
+fn build_body(
+  province: String,
+  grouped_eczaneleri: List(#(String, List(Eczane))),
+) {
+  html.body(body_styles(), [], [main_container(province, grouped_eczaneleri)])
 }
 
 fn body_styles() {
@@ -121,19 +129,15 @@ fn eczane_card(eczane: Eczane) {
       sketch.min_height(px(180)),
     ]),
     [],
-    [
-      eczane_name(eczane.name),
-      html.div(
-        sketch.class([sketch.flex("1"), sketch.margin_bottom(px(10))]),
-        [],
-        [
-          eczane_address(eczane.address),
-          eczane_phone_and_whatsapp(eczane.phone),
-        ],
-      ),
-      eczane_map_links(eczane),
-    ],
+    [eczane_name(eczane.name), eczane_details(eczane), eczane_map_links(eczane)],
   )
+}
+
+fn eczane_details(eczane: Eczane) {
+  html.div(sketch.class([sketch.flex("1"), sketch.margin_bottom(px(10))]), [], [
+    eczane_address(eczane.address),
+    eczane_phone_and_whatsapp(eczane.phone),
+  ])
 }
 
 fn eczane_name(name: String) {
@@ -185,20 +189,24 @@ fn eczane_phone_and_whatsapp(phone: String) {
         [attribute.href("tel:" <> phone)],
         [html.text(phone)],
       ),
-      html.a(
-        sketch.class([
-          sketch.color("#25D366"),
-          sketch.text_decoration("none"),
-          sketch.transition("color 0.3s"),
-          sketch.font_size(px(14)),
-          sketch.padding_block(px(2)),
-          sketch.padding_inline(px(6)),
-          sketch.border("1px solid #25D366"),
-          sketch.border_radius(px(4)),
-        ]),
-        [attribute.href(utils.whatsapp_link(phone))],
-        [html.text("WhatsApp")],
-      ),
+      case utils.is_mobile_phone(phone) {
+        True ->
+          html.a(
+            sketch.class([
+              sketch.color("#25D366"),
+              sketch.text_decoration("none"),
+              sketch.transition("color 0.3s"),
+              sketch.font_size(px(14)),
+              sketch.padding_block(px(2)),
+              sketch.padding_inline(px(6)),
+              sketch.border("1px solid #25D366"),
+              sketch.border_radius(px(4)),
+            ]),
+            [attribute.href(utils.whatsapp_link(phone))],
+            [html.text("WhatsApp")],
+          )
+        False -> html.text("")
+      },
     ],
   )
 }
