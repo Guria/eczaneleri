@@ -1,4 +1,4 @@
-import eczaneleri/common/types.{type Eczane, type Position}
+import eczaneleri/common/types.{type Eczane}
 import eczaneleri/common/utils
 import gleam/list
 import gleam/option.{None, Some}
@@ -107,7 +107,7 @@ fn eczane_card(eczane: Eczane) {
       eczane_name(eczane.name),
       eczane_address(eczane.address),
       eczane_phone(eczane.phone),
-      eczane_map_links(eczane.coordinates),
+      eczane_map_links(eczane),
     ],
   )
 }
@@ -158,26 +158,38 @@ fn eczane_phone(phone: String) {
   )
 }
 
-fn eczane_map_links(coordinates: option.Option(Position)) {
-  case coordinates {
+fn eczane_map_links(eczane: Eczane) {
+  case eczane.coordinates {
     Some(coords) -> {
       html.div(sketch.class([sketch.display("flex"), sketch.gap(px(10))]), [], [
-        map_link("Google Maps", utils.google_maps_link(coords)),
-        map_link("Yandex Maps", utils.yandex_maps_link(coords)),
-        map_link("OpenStreetMap", utils.osm_link(coords)),
+        map_link("Google Maps", utils.google_maps_link(coords), False),
+        map_link("Yandex Maps", utils.yandex_maps_link(coords), False),
+        map_link("OpenStreetMap", utils.osm_link(coords), False),
       ])
     }
-    None -> html.text("")
+    None -> {
+      let query = eczane.name
+      html.div(sketch.class([sketch.display("flex"), sketch.gap(px(10))]), [], [
+        map_link("Google Maps", utils.google_maps_text_search(query), True),
+        map_link("Yandex Maps", utils.yandex_maps_text_search(query), True),
+        map_link("OpenStreetMap", utils.osm_text_search(query), True),
+      ])
+    }
   }
 }
 
-fn map_link(text: String, url: String) {
+fn map_link(text: String, url: String, is_text_search: Bool) {
   html.a(
     sketch.class([
       sketch.display("inline-block"),
       sketch.padding_block(px(8)),
       sketch.padding_inline(px(12)),
-      sketch.background_color("#3498db"),
+      sketch.background_color(case is_text_search {
+        True -> "#e74c3c"
+        // Red color for text search links
+        False -> "#3498db"
+        // Original blue color for coordinate-based links
+      }),
       sketch.color("#fff"),
       sketch.text_decoration("none"),
       sketch.border_radius(px(4)),

@@ -3,6 +3,7 @@ import gleam/float
 import gleam/option.{type Option, None, Some}
 import gleam/regex
 import gleam/result
+import gleam/uri
 
 pub fn google_maps_link(coords: Position) -> String {
   "https://www.google.com/maps/search/?api=1&query="
@@ -47,4 +48,17 @@ pub fn osm_link(coords: Position) -> String {
   <> float.to_string(coords.latitude)
   <> "/"
   <> float.to_string(coords.longitude)
+}
+
+pub fn google_maps_text_search(query: String) -> String {
+  "https://www.google.com/maps/search/?api=1&query="
+  <> uri.percent_encode(query)
+}
+
+pub fn yandex_maps_text_search(query: String) -> String {
+  "https://yandex.com/maps/?text=" <> uri.percent_encode(query)
+}
+
+pub fn osm_text_search(query: String) -> String {
+  "https://www.openstreetmap.org/search?query=" <> uri.percent_encode(query)
 }
