@@ -32,6 +32,7 @@ pub fn parse_eczaneleri(page) -> Result(List(Eczane), Snag) {
     eczane_container
     |> list.try_map(fn(eczane) {
       use eczane_name <- result.try(parse_eczane_name(page, eczane))
+      io.println("Parsing eczane: " <> eczane_name)
       {
         use eczane_tel <- result.try(parse_eczane_tel(page, eczane))
         use eczane_adres <- result.try(parse_eczane_adres(page, eczane))

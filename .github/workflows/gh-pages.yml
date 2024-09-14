@@ -3,7 +3,7 @@ name: Parse and Deploy
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '0 4-6 * * *'
 
 jobs:
   gh-pages:
@@ -40,3 +40,4 @@ jobs:
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
           commit_message: 'Update from GitHub Actions'
+          cname: eczaneleri.guria.dev
