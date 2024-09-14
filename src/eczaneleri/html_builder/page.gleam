@@ -1,3 +1,4 @@
+import birl
 import eczaneleri/common/types.{type Eczane}
 import eczaneleri/common/utils
 import gleam/list
@@ -6,20 +7,29 @@ import lustre/attribute
 import lustre/element
 import sketch
 import sketch/lustre as sketch_lustre
+import sketch/lustre/element as sketch_element
 import sketch/lustre/element/html
 import sketch/size.{px}
 
 pub fn build_page(
   province: String,
   grouped_eczaneleri: List(#(String, List(Eczane))),
+  update_time: birl.Time,
 ) -> String {
   let assert Ok(cache) = sketch.cache(strategy: sketch.Ephemeral)
-  sketch_lustre.ssr(view(province, grouped_eczaneleri), cache)
+  sketch_lustre.ssr(view(province, grouped_eczaneleri, update_time), cache)
   |> element.to_document_string()
 }
 
-fn view(province: String, grouped_eczaneleri: List(#(String, List(Eczane)))) {
-  html.html([], [build_head(province), build_body(province, grouped_eczaneleri)])
+fn view(
+  province: String,
+  grouped_eczaneleri: List(#(String, List(Eczane))),
+  update_time: birl.Time,
+) {
+  html.html([], [
+    build_head(province),
+    build_body(province, grouped_eczaneleri, update_time),
+  ])
 }
 
 fn build_head(province: String) {
@@ -36,8 +46,11 @@ fn build_head(province: String) {
 fn build_body(
   province: String,
   grouped_eczaneleri: List(#(String, List(Eczane))),
+  update_time: birl.Time,
 ) {
-  html.body(body_styles(), [], [main_container(province, grouped_eczaneleri)])
+  html.body(body_styles(), [], [
+    main_container(province, grouped_eczaneleri, update_time),
+  ])
 }
 
 fn body_styles() {
@@ -53,6 +66,7 @@ fn body_styles() {
 fn main_container(
   province: String,
   grouped_eczaneleri: List(#(String, List(Eczane))),
+  update_time: birl.Time,
 ) {
   html.div(
     sketch.class([
@@ -61,17 +75,33 @@ fn main_container(
       sketch.padding(px(10)),
     ]),
     [],
-    [page_title(province), district_list(grouped_eczaneleri)],
+    [
+      title_with_update_time(province, update_time),
+      district_list(grouped_eczaneleri),
+    ],
+  )
+}
+
+fn title_with_update_time(province: String, update_time: birl.Time) {
+  html.div(
+    sketch.class([
+      sketch.display("flex"),
+      sketch.justify_content("center"),
+      sketch.align_items("center"),
+      sketch.gap(px(10)),
+      sketch.margin_bottom(px(20)),
+    ]),
+    [],
+    [page_title(province), update_time_icon(update_time)],
   )
 }
 
 fn page_title(province: String) {
   html.h1(
     sketch.class([
-      sketch.text_align("center"),
       sketch.color("#333"),
       sketch.font_size(px(24)),
-      sketch.margin_bottom(px(20)),
+      sketch.margin(px(0)),
     ]),
     [],
     [html.text(province <> " Nöbetçi Eczaneleri")],
@@ -267,5 +297,54 @@ fn map_link(text: String, url: String, is_text_search: Bool) {
     ]),
     [attribute.href(url), attribute.target("_blank")],
     [html.text(text)],
+  )
+}
+
+fn update_time_icon(update_time: birl.Time) {
+  let assert Ok(istanbul_time) =
+    birl.set_timezone(update_time, "Europe/Istanbul")
+
+  let formatted_time =
+    birl.to_naive_date_string(istanbul_time)
+    <> " "
+    <> birl.to_naive_time_string(istanbul_time)
+
+  html.div(
+    sketch.class([
+      sketch.display("inline-flex"),
+      sketch.align_items("center"),
+      sketch.cursor("pointer"),
+    ]),
+    [attribute.attribute("title", "Son güncelleme: " <> formatted_time)],
+    [
+      html.svg_(
+        [
+          attribute.width(24),
+          attribute.height(24),
+          attribute.attribute("viewBox", "0 0 24 24"),
+          attribute.attribute("fill", "none"),
+          attribute.attribute("stroke", "currentColor"),
+          attribute.attribute("stroke-width", "2"),
+          attribute.attribute("stroke-linecap", "round"),
+          attribute.attribute("stroke-linejoin", "round"),
+        ],
+        [
+          sketch_element.element_(
+            "circle",
+            [
+              attribute.attribute("cx", "12"),
+              attribute.attribute("cy", "12"),
+              attribute.attribute("r", "10"),
+            ],
+            [],
+          ),
+          sketch_element.element_(
+            "polyline",
+            [attribute.attribute("points", "12 6 12 12 16 14")],
+            [],
+          ),
+        ],
+      ),
+    ],
   )
 }

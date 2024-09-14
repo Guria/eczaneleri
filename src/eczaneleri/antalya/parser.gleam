@@ -1,5 +1,8 @@
+import birl
 import chrobot
-import eczaneleri/common/types.{type Eczane, type Position, Eczane, Position}
+import eczaneleri/common/types.{
+  type Eczane, type ParseResult, type Position, Eczane, ParseResult, Position,
+}
 import eczaneleri/common/utils
 import gleam/io
 import gleam/list
@@ -8,7 +11,7 @@ import gleam/result
 import snag.{type Snag}
 import snag/helpers.{map_error_to_snag}
 
-pub fn parse_eczaneleri(page) -> Result(List(Eczane), Snag) {
+pub fn parse_eczaneleri(page) -> Result(ParseResult, Snag) {
   io.println("Starting to parse Antalya eczaneleri")
   use container <- result.try(
     chrobot.await_selector(page, ".acilistaGizle")
@@ -52,6 +55,9 @@ pub fn parse_eczaneleri(page) -> Result(List(Eczane), Snag) {
     |> snag.context("Failed to parse eczane in " <> ilce_name)
   })
   |> result.map(list.flatten)
+  |> result.map(fn(eczaneleri) {
+    ParseResult(eczaneleri: eczaneleri, update_time: birl.now())
+  })
   |> snag.context("Failed to parse eczaneleri")
 }
 

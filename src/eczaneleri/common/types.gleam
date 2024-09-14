@@ -1,3 +1,4 @@
+import birl
 import gleam/option.{type Option}
 
 pub type Position {
@@ -13,4 +14,8 @@ pub type Eczane {
     district: String,
     coordinates: Option(Position),
   )
+}
+
+pub type ParseResult {
+  ParseResult(eczaneleri: List(Eczane), update_time: birl.Time)
 }

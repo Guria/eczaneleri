@@ -1,13 +1,13 @@
-import eczaneleri/common/types.{type Eczane}
+import eczaneleri/common/types.{type Eczane, type ParseResult}
 import eczaneleri/html_builder/page
 import gleam/dict
 import gleam/list
 import gleam/order
 import gleam/string
 
-pub fn build_page(eczaneleri: List(Eczane)) -> String {
-  let grouped_eczaneleri = group_and_sort_eczaneleri(eczaneleri)
-  page.build_page("Antalya", grouped_eczaneleri)
+pub fn build_page(parse_result: ParseResult) -> String {
+  let grouped_eczaneleri = group_and_sort_eczaneleri(parse_result.eczaneleri)
+  page.build_page("Antalya", grouped_eczaneleri, parse_result.update_time)
 }
 
 fn group_and_sort_eczaneleri(
