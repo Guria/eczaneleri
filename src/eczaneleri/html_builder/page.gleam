@@ -1,6 +1,7 @@
 import birl
 import eczaneleri/common/types.{type Eczane}
 import eczaneleri/common/utils
+import gleam/float
 import gleam/list
 import gleam/option.{None, Some}
 import lustre/attribute
@@ -166,7 +167,7 @@ fn eczane_card(eczane: Eczane) {
       sketch.flex_direction("column"),
       sketch.min_height(px(180)),
     ]),
-    [],
+    [attribute.class("h-card")],
     [eczane_name(eczane.name), eczane_details(eczane), eczane_map_links(eczane)],
   )
 }
@@ -186,7 +187,7 @@ fn eczane_name(name: String) {
       sketch.margin_bottom(px(10)),
       sketch.color("#2c3e50"),
     ]),
-    [],
+    [attribute.class("p-name")],
     [html.text(name)],
   )
 }
@@ -199,7 +200,7 @@ fn eczane_address(address: String) {
       sketch.color("#34495e"),
       sketch.font_size(px(14)),
     ]),
-    [],
+    [attribute.class("p-adr")],
     [html.text(address)],
   )
 }
@@ -224,7 +225,7 @@ fn eczane_phone_and_whatsapp(phone: String) {
           sketch.transition("color 0.3s"),
           sketch.font_size(px(16)),
         ]),
-        [attribute.href("tel:" <> phone)],
+        [attribute.href("tel:" <> phone), attribute.class("p-tel")],
         [html.text(phone)],
       ),
       case utils.is_mobile_phone(phone) {
@@ -264,6 +265,18 @@ fn eczane_map_links(eczane: Eczane) {
           map_link("Google", utils.google_maps_link(coords), False),
           map_link("Yandex", utils.yandex_maps_link(coords), False),
           map_link("OSM", utils.osm_link(coords), False),
+          html.span(
+            sketch.class([sketch.display("none")]),
+            [attribute.class("p-geo")],
+            [
+              html.span_([attribute.class("p-latitude")], [
+                html.text(coords.latitude |> float.to_string),
+              ]),
+              html.span_([attribute.class("p-longitude")], [
+                html.text(coords.longitude |> float.to_string),
+              ]),
+            ],
+          ),
         ],
       )
     }
