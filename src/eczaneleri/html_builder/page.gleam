@@ -127,7 +127,7 @@ fn page_title(province: String) {
       sketch.margin(px(0)),
     ]),
     [],
-    [html.text(province <> " Nöbetçi Eczaneleri")],
+    [html.text(province <> " Pharmacies on Duty")],
   )
 }
 
@@ -161,7 +161,7 @@ fn eczane_grid(eczaneler: List(Eczane)) {
   html.div(
     sketch.class([
       sketch.display("grid"),
-      sketch.grid_template_columns("repeat(auto-fill, minmax(280px, 1fr))"),
+      sketch.grid_template_columns("repeat(auto-fill, minmax(300px, 1fr))"),
       sketch.gap(px(15)),
       sketch.margin_bottom(px(30)),
     ]),
@@ -317,7 +317,8 @@ fn eczane_map_links(eczane: Eczane) {
 fn map_link(text: String, url: String, is_text_search: Bool) {
   html.a(
     sketch.class([
-      sketch.display("inline-block"),
+      sketch.display("inline-flex"),
+      sketch.align_items("center"),
       sketch.padding_block(px(6)),
       sketch.padding_inline(px(10)),
       sketch.background_color(case is_text_search {
@@ -329,9 +330,10 @@ fn map_link(text: String, url: String, is_text_search: Bool) {
       sketch.border_radius(px(4)),
       sketch.transition("background-color 0.3s"),
       sketch.font_size(px(14)),
+      sketch.gap(px(5)),
     ]),
     [attribute.href(url), attribute.target("_blank")],
-    [html.text(text)],
+    [html.span_([], [html.text(text)])],
   )
 }
 
@@ -350,7 +352,7 @@ fn update_time_icon(update_time: birl.Time) {
       sketch.align_items("center"),
       sketch.cursor("pointer"),
     ]),
-    [attribute.attribute("title", "Son güncelleme: " <> formatted_time)],
+    [attribute.attribute("title", "Last updated: " <> formatted_time)],
     [
       html.svg_(
         [
