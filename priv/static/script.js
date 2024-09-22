@@ -90,14 +90,20 @@ function requestLocation() {
 }
 
 window.addEventListener("load", () => {
-  navigator.permissions.query({ name: "geolocation" }).then((permission) => {
-    if (permission.state === "granted") {
-      requestLocation();
-    }
-    safePosthogCapture("geolocation_permission_state", {
-      state: permission.state,
+  if (navigator.permissions && navigator.permissions.query) {
+    navigator.permissions.query({ name: "geolocation" }).then((permission) => {
+      if (permission.state === "granted") {
+        requestLocation();
+      }
+      safePosthogCapture("geolocation_permission_state", {
+        state: permission.state,
+      });
     });
-  });
+  } else {
+    safePosthogCapture("geolocation_permission_api_not_supported");
+    requestLocation();
+    document.querySelector("#get-distance-to-me").style.display = "none";
+  }
 
   document
     .querySelectorAll(
