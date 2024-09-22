@@ -25,10 +25,27 @@ function getDistance(lat1, lon1, lat2, lon2, unit) {
   }
 }
 
+function safePosthogCapture(eventName, properties) {
+  if (typeof posthog !== "undefined" && posthog.capture) {
+    posthog.capture(eventName, properties);
+  } else {
+    console.log(
+      "PostHog not available, event not captured:",
+      eventName,
+      properties
+    );
+  }
+}
+
 function requestLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        safePosthogCapture("location_request_success", {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+
         [...document.querySelectorAll(".h-card")].forEach((card) => {
           const latitude = card.querySelector(".p-latitude").innerText;
           const longitude = card.querySelector(".p-longitude").innerText;
@@ -56,7 +73,10 @@ function requestLocation() {
         document.querySelector("#get-distance-to-me").style.display = "none";
       },
       (error) => {
-        console.log(error);
+        safePosthogCapture("location_request_error", {
+          error_code: error.code,
+          error_message: error.message,
+        });
       },
       {
         enableHighAccuracy: true,
@@ -65,7 +85,7 @@ function requestLocation() {
       }
     );
   } else {
-    console.log("Geolocation is not supported by this browser.");
+    safePosthogCapture("geolocation_not_supported");
   }
 }
 
@@ -74,5 +94,41 @@ window.addEventListener("load", () => {
     if (permission.state === "granted") {
       requestLocation();
     }
+    safePosthogCapture("geolocation_permission_state", {
+      state: permission.state,
+    });
+  });
+
+  document
+    .querySelectorAll(
+      'a[href^="https://www.google.com/maps"], a[href^="https://yandex.com/maps"], a[href^="https://www.openstreetmap.org"]'
+    )
+    .forEach((link) => {
+      link.addEventListener("click", (event) => {
+        safePosthogCapture("map_link_clicked", {
+          map_service: event.target.textContent,
+          pharmacy_name: event.target
+            .closest(".h-card")
+            .querySelector(".p-name").innerText,
+        });
+      });
+    });
+
+  document.querySelectorAll('a[href^="tel:"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+      safePosthogCapture("telephone_link_clicked", {
+        pharmacy_name: event.target.closest(".h-card").querySelector(".p-name")
+          .innerText,
+      });
+    });
+  });
+
+  document.querySelectorAll('a[href^="https://wa.me"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+      safePosthogCapture("whatsapp_link_clicked", {
+        pharmacy_name: event.target.closest(".h-card").querySelector(".p-name")
+          .innerText,
+      });
+    });
   });
 });
