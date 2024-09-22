@@ -474,7 +474,7 @@ fn map_link(text: String, url: String, is_text_search: Bool) {
       sketch.gap(px(5)),
     ]),
     [attribute.href(url), attribute.target("_blank")],
-    [html.span_([], [html.text(text)])],
+    [html.text(text)],
   )
 }
 
