@@ -17,10 +17,10 @@ fn group_and_sort_eczaneleri(
   |> dict.to_list()
   |> list.sort(fn(a, b) {
     case a.0, b.0 {
-      "Muratpaşa", _ -> order.Lt
-      _, "Muratpaşa" -> order.Gt
       "Konyaaltı", _ -> order.Lt
       _, "Konyaaltı" -> order.Gt
+      "Muratpaşa", _ -> order.Lt
+      _, "Muratpaşa" -> order.Gt
       "Kepez", _ -> order.Lt
       _, "Kepez" -> order.Gt
       _, _ -> string.compare(a.0, b.0)
