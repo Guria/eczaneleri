@@ -63,6 +63,7 @@ fn build_head(province: String) {
       attribute.attribute("content", "width=device-width, initial-scale=1.0"),
     ]),
     html.title([], province <> " Eczaneleri"),
+    html.script_([attribute.src("./script.js")], []),
     posthog_script(),
     ..social_meta_tags(province)
   ])
@@ -113,6 +114,7 @@ fn build_body(
   html.body(body_styles(), [], [
     main_container(province, grouped_eczaneleri),
     footer(update_time),
+    floating_action_button(),
   ])
 }
 
@@ -298,9 +300,25 @@ fn eczane_name(name: String) {
       sketch.margin_top(px(0)),
       sketch.margin_bottom(px(0)),
       sketch.color("#2c3e50"),
+      sketch.display("flex"),
+      sketch.align_items("flex-start"),
+      sketch.justify_content("space-between"),
+      sketch.gap(px(8)),
     ]),
     [attribute.class("p-name")],
-    [html.text(name)],
+    [
+      html.span_([], [html.text(name)]),
+      html.span(
+        sketch.class([
+          sketch.font_weight("bold"),
+          sketch.color("#3498db"),
+          sketch.font_size(px(14)),
+          sketch.text_wrap("nowrap"),
+        ]),
+        [attribute.class("p-distance")],
+        [],
+      ),
+    ],
   )
 }
 
@@ -457,5 +475,34 @@ fn map_link(text: String, url: String, is_text_search: Bool) {
     ]),
     [attribute.href(url), attribute.target("_blank")],
     [html.span_([], [html.text(text)])],
+  )
+}
+
+fn floating_action_button() {
+  html.button(
+    sketch.class([
+      sketch.position("fixed"),
+      sketch.bottom(px(20)),
+      sketch.right(px(20)),
+      sketch.width(px(150)),
+      sketch.height(px(36)),
+      sketch.border_radius(px(28)),
+      sketch.background_color("#3498db"),
+      sketch.color("#ffffff"),
+      sketch.border("none"),
+      sketch.box_shadow("0 2px 5px rgba(0, 0, 0, 0.2)"),
+      sketch.cursor("pointer"),
+      sketch.display("flex"),
+      sketch.align_items("center"),
+      sketch.justify_content("center"),
+      sketch.transition("background-color 0.3s"),
+      sketch.hover([sketch.background_color("#2980b9")]),
+    ]),
+    [
+      attribute.id("get-distance-to-me"),
+      attribute.title("Get my location"),
+      attribute.attribute("onclick", "requestLocation()"),
+    ],
+    [html.text("Get distance to me")],
   )
 }
