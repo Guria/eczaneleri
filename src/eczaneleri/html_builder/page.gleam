@@ -64,7 +64,45 @@ fn build_head(province: String) {
     ]),
     html.title([], province <> " Eczaneleri"),
     posthog_script(),
+    ..social_meta_tags(province)
   ])
+}
+
+fn social_meta_tags(province: String) {
+  [
+    html.meta([
+      attribute.property("property", "og:title"),
+      attribute.property("content", province <> " Eczaneleri"),
+    ]),
+    html.meta([
+      attribute.property("property", "og:description"),
+      attribute.property("content", "Find pharmacies on duty in " <> province),
+    ]),
+    html.meta([
+      attribute.property("property", "og:image"),
+      attribute.property("content", "/eczane.png"),
+    ]),
+    html.meta([
+      attribute.property("property", "og:type"),
+      attribute.property("content", "website"),
+    ]),
+    html.meta([
+      attribute.name("twitter:card"),
+      attribute.attribute("content", "summary_large_image"),
+    ]),
+    html.meta([
+      attribute.name("twitter:title"),
+      attribute.attribute("content", province <> " Pharmacies on Duty"),
+    ]),
+    html.meta([
+      attribute.name("twitter:description"),
+      attribute.attribute("content", "Find pharmacies on duty in " <> province),
+    ]),
+    html.meta([
+      attribute.name("twitter:image"),
+      attribute.attribute("content", "/eczane.png"),
+    ]),
+  ]
 }
 
 fn build_body(
