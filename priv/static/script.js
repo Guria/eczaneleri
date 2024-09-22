@@ -113,6 +113,8 @@ window.addEventListener("load", () => {
       link.addEventListener("click", (event) => {
         safePosthogCapture("map_link_clicked", {
           map_service: event.target.textContent,
+          district: event.target.closest("details").querySelector("summary")
+            .innerText,
           pharmacy_name: event.target
             .closest(".h-card")
             .querySelector(".p-name").innerText,
@@ -123,6 +125,8 @@ window.addEventListener("load", () => {
   document.querySelectorAll('a[href^="tel:"]').forEach((link) => {
     link.addEventListener("click", (event) => {
       safePosthogCapture("telephone_link_clicked", {
+        district: event.target.closest("details").querySelector("summary")
+          .innerText,
         pharmacy_name: event.target.closest(".h-card").querySelector(".p-name")
           .innerText,
       });
@@ -132,6 +136,8 @@ window.addEventListener("load", () => {
   document.querySelectorAll('a[href^="https://wa.me"]').forEach((link) => {
     link.addEventListener("click", (event) => {
       safePosthogCapture("whatsapp_link_clicked", {
+        district: event.target.closest("details").querySelector("summary")
+          .innerText,
         pharmacy_name: event.target.closest(".h-card").querySelector(".p-name")
           .innerText,
       });
