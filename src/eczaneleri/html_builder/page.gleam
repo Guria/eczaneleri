@@ -6,6 +6,7 @@ import gleam/float
 import gleam/list
 import gleam/option.{None, Some}
 import gleam/result
+import gleroglero/outline
 import lustre/attribute
 import lustre/element
 import sketch
@@ -72,7 +73,8 @@ fn build_body(
   update_time: birl.Time,
 ) {
   html.body(body_styles(), [], [
-    main_container(province, grouped_eczaneleri, update_time),
+    main_container(province, grouped_eczaneleri),
+    footer(update_time),
   ])
 }
 
@@ -89,33 +91,35 @@ fn body_styles() {
 fn main_container(
   province: String,
   grouped_eczaneleri: List(#(String, List(Eczane))),
-  update_time: birl.Time,
 ) {
-  html.div(
+  html.main(
     sketch.class([
       sketch.max_width(px(1200)),
       sketch.margin_("auto"),
       sketch.padding(px(10)),
     ]),
     [],
-    [
-      title_with_update_time(province, update_time),
-      district_list(grouped_eczaneleri),
-    ],
+    [page_title(province), district_list(grouped_eczaneleri)],
   )
 }
 
-fn title_with_update_time(province: String, update_time: birl.Time) {
-  html.div(
+fn footer(update_time: birl.Time) {
+  let assert Ok(istanbul_time) =
+    birl.set_timezone(update_time, "Europe/Istanbul")
+
+  let formatted_time =
+    birl.to_naive_date_string(istanbul_time)
+    <> " "
+    <> birl.to_naive_time_string(istanbul_time)
+
+  html.footer(
     sketch.class([
-      sketch.display("flex"),
-      sketch.justify_content("center"),
-      sketch.align_items("center"),
-      sketch.gap(px(10)),
-      sketch.margin_bottom(px(20)),
+      sketch.text_align("center"),
+      sketch.padding(px(10)),
+      sketch.font_size(px(14)),
     ]),
     [],
-    [page_title(province), update_time_icon(update_time)],
+    [html.text("Last updated: " <> formatted_time)],
   )
 }
 
@@ -164,6 +168,7 @@ fn eczane_grid(eczaneler: List(Eczane)) {
       sketch.grid_template_columns("repeat(auto-fill, minmax(300px, 1fr))"),
       sketch.gap(px(15)),
       sketch.margin_bottom(px(30)),
+      sketch.last_child([sketch.margin_bottom(px(0))]),
     ]),
     [],
     list.map(eczaneler, eczane_card),
@@ -180,17 +185,65 @@ fn eczane_card(eczane: Eczane) {
       sketch.display("flex"),
       sketch.flex_direction("column"),
       sketch.min_height(px(180)),
+      sketch.gap(px(10)),
     ]),
     [attribute.class("h-card")],
-    [eczane_name(eczane.name), eczane_details(eczane), eczane_map_links(eczane)],
+    [
+      eczane_name(eczane.name),
+      eczane_details(eczane),
+      eczane_phone_and_whatsapp(eczane.phone),
+      html.div(
+        sketch.class([
+          sketch.display("flex"),
+          sketch.justify_content("space-between"),
+          sketch.align_items("center"),
+          sketch.flex_wrap("wrap"),
+          sketch.gap(px(10)),
+        ]),
+        [],
+        [
+          html.div(
+            sketch.class([
+              sketch.display("flex"),
+              sketch.align_items("center"),
+              sketch.gap(px(5)),
+              sketch.color("#34495e"),
+              sketch.font_size(px(14)),
+            ]),
+            [],
+            [
+              html.span(
+                sketch.class([
+                  sketch.display("inline-flex"),
+                  sketch.align_items("center"),
+                  sketch.justify_content("center"),
+                  sketch.width(px(20)),
+                  sketch.height(px(20)),
+                ]),
+                [],
+                [sketch_element.styled(outline.map())],
+              ),
+              html.text("See on map"),
+            ],
+          ),
+          eczane_map_links(eczane),
+        ],
+      ),
+    ],
   )
 }
 
 fn eczane_details(eczane: Eczane) {
-  html.div(sketch.class([sketch.flex("1"), sketch.margin_bottom(px(10))]), [], [
-    eczane_address(eczane.address),
-    eczane_phone_and_whatsapp(eczane.phone),
-  ])
+  html.div(
+    sketch.class([
+      sketch.flex("1"),
+      sketch.display("flex"),
+      sketch.flex_direction("column"),
+      sketch.gap(px(10)),
+    ]),
+    [],
+    [eczane_address(eczane.address)],
+  )
 }
 
 fn eczane_name(name: String) {
@@ -198,7 +251,7 @@ fn eczane_name(name: String) {
     sketch.class([
       sketch.font_size(px(18)),
       sketch.margin_top(px(0)),
-      sketch.margin_bottom(px(10)),
+      sketch.margin_bottom(px(0)),
       sketch.color("#2c3e50"),
     ]),
     [attribute.class("p-name")],
@@ -207,37 +260,62 @@ fn eczane_name(name: String) {
 }
 
 fn eczane_address(address: String) {
-  html.p(
+  html.div(
     sketch.class([
-      sketch.margin(px(0)),
-      sketch.margin_bottom(px(5)),
+      sketch.display("flex"),
+      sketch.align_items("flex-start"),
+      sketch.gap(px(8)),
       sketch.color("#34495e"),
       sketch.font_size(px(14)),
+      sketch.line_height("20px"),
     ]),
     [attribute.class("p-adr")],
-    [html.text(address)],
+    [
+      html.span(
+        sketch.class([
+          sketch.display("inline-flex"),
+          sketch.align_items("center"),
+          sketch.justify_content("center"),
+          sketch.width(px(20)),
+          sketch.height(px(20)),
+          sketch.flex_shrink(0.0),
+        ]),
+        [],
+        [sketch_element.styled(outline.map())],
+      ),
+      html.span_([], [html.text(address)]),
+    ],
   )
 }
 
 fn eczane_phone_and_whatsapp(phone: String) {
-  html.p(
+  html.div(
     sketch.class([
-      sketch.margin(px(0)),
-      sketch.margin_bottom(px(5)),
-      sketch.color("#34495e"),
       sketch.display("flex"),
-      sketch.flex_wrap("wrap"),
       sketch.align_items("center"),
-      sketch.gap(px(10)),
+      sketch.gap(px(8)),
+      sketch.color("#34495e"),
     ]),
     [],
     [
+      html.span(
+        sketch.class([
+          sketch.display("inline-flex"),
+          sketch.align_items("center"),
+          sketch.justify_content("center"),
+          sketch.width(px(20)),
+          sketch.height(px(20)),
+          sketch.flex_shrink(0.0),
+        ]),
+        [],
+        [sketch_element.styled(outline.phone())],
+      ),
       html.a(
         sketch.class([
           sketch.color("#3498db"),
           sketch.text_decoration("none"),
           sketch.transition("color 0.3s"),
-          sketch.font_size(px(16)),
+          sketch.font_size(px(14)),
         ]),
         [attribute.href("tel:" <> phone), attribute.class("p-tel")],
         [html.text(phone)],
@@ -254,6 +332,7 @@ fn eczane_phone_and_whatsapp(phone: String) {
               sketch.padding_inline(px(6)),
               sketch.border("1px solid #25D366"),
               sketch.border_radius(px(4)),
+              sketch.margin_left(px(8)),
             ]),
             [attribute.href(utils.whatsapp_link(phone))],
             [html.text("WhatsApp")],
@@ -270,7 +349,6 @@ fn eczane_map_links(eczane: Eczane) {
       html.div(
         sketch.class([
           sketch.display("flex"),
-          sketch.flex_wrap("wrap"),
           sketch.gap(px(10)),
           sketch.justify_content("flex-start"),
         ]),
@@ -334,54 +412,5 @@ fn map_link(text: String, url: String, is_text_search: Bool) {
     ]),
     [attribute.href(url), attribute.target("_blank")],
     [html.span_([], [html.text(text)])],
-  )
-}
-
-fn update_time_icon(update_time: birl.Time) {
-  let assert Ok(istanbul_time) =
-    birl.set_timezone(update_time, "Europe/Istanbul")
-
-  let formatted_time =
-    birl.to_naive_date_string(istanbul_time)
-    <> " "
-    <> birl.to_naive_time_string(istanbul_time)
-
-  html.div(
-    sketch.class([
-      sketch.display("inline-flex"),
-      sketch.align_items("center"),
-      sketch.cursor("pointer"),
-    ]),
-    [attribute.attribute("title", "Last updated: " <> formatted_time)],
-    [
-      html.svg_(
-        [
-          attribute.width(24),
-          attribute.height(24),
-          attribute.attribute("viewBox", "0 0 24 24"),
-          attribute.attribute("fill", "none"),
-          attribute.attribute("stroke", "currentColor"),
-          attribute.attribute("stroke-width", "2"),
-          attribute.attribute("stroke-linecap", "round"),
-          attribute.attribute("stroke-linejoin", "round"),
-        ],
-        [
-          sketch_element.element_(
-            "circle",
-            [
-              attribute.attribute("cx", "12"),
-              attribute.attribute("cy", "12"),
-              attribute.attribute("r", "10"),
-            ],
-            [],
-          ),
-          sketch_element.element_(
-            "polyline",
-            [attribute.attribute("points", "12 6 12 12 16 14")],
-            [],
-          ),
-        ],
-      ),
-    ],
   )
 }

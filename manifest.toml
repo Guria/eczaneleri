@@ -17,6 +17,7 @@ packages = [
   { name = "gleam_stdlib", version = "0.40.0", build_tools = ["gleam"], requirements = [], otp_app = "gleam_stdlib", source = "hex", outer_checksum = "86606B75A600BBD05E539EB59FABC6E307EEEA7B1E5865AFB6D980A93BCB2181" },
   { name = "glearray", version = "0.2.2", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "glearray", source = "hex", outer_checksum = "9C207E05F38D724F464FA921378DB3ABC2B0A2F5821116D8BC8B2CACC68930D5" },
   { name = "gleeunit", version = "1.2.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "gleeunit", source = "hex", outer_checksum = "F7A7228925D3EE7D0813C922E062BFD6D7E9310F0BEE585D3A42F3307E3CFD13" },
+  { name = "gleroglero", version = "1.1.0", build_tools = ["gleam"], requirements = ["gleam_stdlib", "lustre"], otp_app = "gleroglero", source = "hex", outer_checksum = "D265C3629521E2E8B994BE2FD6EE9CCB287DF0D301D0E72AC3EF2F6EB9DEBD89" },
   { name = "lustre", version = "4.4.1", build_tools = ["gleam"], requirements = ["gleam_erlang", "gleam_json", "gleam_otp", "gleam_stdlib"], otp_app = "lustre", source = "hex", outer_checksum = "270A54C5D1A9E29EFE6E7CBD2900F698D1DC574B803F22FB049A14E987D0B2C7" },
   { name = "plinth", version = "0.4.12", build_tools = ["gleam"], requirements = ["conversation", "gleam_javascript", "gleam_json", "gleam_stdlib"], otp_app = "plinth", source = "hex", outer_checksum = "3727B517C05BD4D49A4AF34BA7E63E03CA77B4E8AD2A4DCE60266B28717C1F9A" },
   { name = "ranger", version = "1.2.0", build_tools = ["gleam"], requirements = ["gleam_stdlib"], otp_app = "ranger", source = "hex", outer_checksum = "1566C272B1D141B3BBA38B25CB761EF56E312E79EC0E2DFD4D3C19FB0CC1F98C" },
@@ -35,6 +36,7 @@ chrobot = { version = ">= 3.0.0 and < 4.0.0" }
 gleam_erlang = { version = ">= 0.26.0 and < 1.0.0" }
 gleam_stdlib = { version = ">= 0.34.0 and < 2.0.0" }
 gleeunit = { version = ">= 1.0.0 and < 2.0.0" }
+gleroglero = { version = ">= 1.1.0 and < 2.0.0" }
 lustre = { version = ">= 4.4.1 and < 5.0.0" }
 simplifile = { version = ">= 2.1.0 and < 3.0.0" }
 sketch = { version = ">= 3.0.2 and < 4.0.0" }
