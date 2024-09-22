@@ -179,20 +179,27 @@ fn district_list(grouped_eczaneleri: List(#(String, List(Eczane)))) {
     [],
     list.map(grouped_eczaneleri, fn(group) {
       let #(district, eczaneler) = group
-      [district_title(district), eczane_grid(eczaneler)]
-    })
-      |> list.flatten,
+      html.details(
+        sketch.class([sketch.margin_bottom(px(20)), sketch.border("none")]),
+        [attribute.open(True)],
+        [district_title(district), eczane_grid(eczaneler)],
+      )
+    }),
   )
 }
 
 fn district_title(district: String) {
-  html.h2(
+  html.summary(
     sketch.class([
       sketch.color("#2c3e50"),
-      sketch.border_bottom("2px solid #3498db"),
-      sketch.padding_bottom(px(10)),
-      sketch.margin_bottom(px(15)),
+      sketch.padding(px(15)),
       sketch.font_size(px(20)),
+      sketch.font_weight("bold"),
+      sketch.cursor("pointer"),
+      sketch.user_select("none"),
+      sketch.transition("background-color 0.3s"),
+      sketch.hover([sketch.background_color("#e0e0e0")]),
+      sketch.border_bottom("2px solid #3498db"),
     ]),
     [],
     [html.text(district)],
@@ -205,8 +212,8 @@ fn eczane_grid(eczaneler: List(Eczane)) {
       sketch.display("grid"),
       sketch.grid_template_columns("repeat(auto-fill, minmax(300px, 1fr))"),
       sketch.gap(px(15)),
-      sketch.margin_bottom(px(30)),
-      sketch.last_child([sketch.margin_bottom(px(0))]),
+      sketch.padding_block(px(15)),
+      sketch.padding_inline(px(0)),
     ]),
     [],
     list.map(eczaneler, eczane_card),
