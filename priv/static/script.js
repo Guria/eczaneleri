@@ -47,8 +47,8 @@ function requestLocation() {
         });
 
         [...document.querySelectorAll(".h-card")].forEach((card) => {
-          const latitude = card.querySelector(".p-latitude").innerText;
-          const longitude = card.querySelector(".p-longitude").innerText;
+          const latitude = card.querySelector(".p-latitude");
+          const longitude = card.querySelector(".p-longitude");
 
           if (!latitude || !longitude) {
             return;
@@ -57,8 +57,8 @@ function requestLocation() {
           const distance = getDistance(
             position.coords.latitude,
             position.coords.longitude,
-            latitude,
-            longitude,
+            latitude.innerText,
+            longitude.innerText,
             "K"
           );
 
