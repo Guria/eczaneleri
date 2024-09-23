@@ -13,6 +13,7 @@ import sketch
 import sketch/lustre as sketch_lustre
 import sketch/lustre/element as sketch_element
 import sketch/lustre/element/html
+import sketch/media
 import sketch/size.{px}
 
 pub fn is_ci() -> Bool {
@@ -136,7 +137,8 @@ fn main_container(
     sketch.class([
       sketch.max_width(px(1200)),
       sketch.margin_("auto"),
-      sketch.padding(px(10)),
+      sketch.padding(px(0)),
+      sketch.media(media.min_width(px(480)), [sketch.padding(px(10))]),
     ]),
     [],
     [page_title(province), district_list(grouped_eczaneleri)],
