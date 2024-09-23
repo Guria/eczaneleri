@@ -305,9 +305,9 @@ fn eczane_name(name: String) {
       sketch.justify_content("space-between"),
       sketch.gap(px(8)),
     ]),
-    [attribute.class("p-name")],
+    [],
     [
-      html.span_([], [html.text(name)]),
+      html.span_([attribute.class("p-name")], [html.text(name)]),
       html.span(
         sketch.class([
           sketch.font_weight("bold"),
