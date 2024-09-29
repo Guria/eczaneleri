@@ -7,10 +7,16 @@ import simplifile
 import snag
 import snag/helpers.{map_error_to_snag}
 
+@external(erlang, "erlang", "halt")
+fn exit(status: Int) -> Nil
+
 pub fn main() {
   case do_main() {
     Ok(_) -> io.println("Scraper completed successfully")
-    Error(snag) -> io.print(snag.pretty_print(snag))
+    Error(snag) -> {
+      io.println(snag.pretty_print(snag))
+      exit(1)
+    }
   }
 }
 
