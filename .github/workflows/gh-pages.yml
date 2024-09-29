@@ -3,28 +3,28 @@ name: Parse and Deploy
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 4-6 * * *'
+    - cron: "0,5,10 6 * * *"
 
 jobs:
   gh-pages:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Gleam
         uses: erlef/setup-beam@v1
         with:
           otp-version: "27.0.1"
           gleam-version: "1.4.1"
           rebar3-version: "3"
-      
+
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v1
         id: setup-chrome
-      
+
       - name: Download dependencies
         run: gleam deps download
-      
+
       - name: Run script
         run: gleam run
         env:
@@ -37,7 +37,7 @@ jobs:
           publish_dir: ./priv/static
           publish_branch: gh-pages
           force_orphan: true
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Update from GitHub Actions'
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: "Update from GitHub Actions"
           cname: eczaneleri.guria.dev
