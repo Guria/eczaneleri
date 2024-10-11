@@ -29,7 +29,8 @@ jobs:
         uses: nick-fields/retry@v3.0.0
         with:
           max_attempts: 3
-          retry_wait_seconds: 10
+          retry_wait_seconds: 15
+          timeout_minutes: 2
           command: gleam run
         env:
           CHROBOT_BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
