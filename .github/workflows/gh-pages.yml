@@ -26,7 +26,11 @@ jobs:
         run: gleam deps download
 
       - name: Run script
-        run: gleam run
+        uses: nick-fields/retry@v3.0.0
+        with:
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: gleam run
         env:
           CHROBOT_BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
 
