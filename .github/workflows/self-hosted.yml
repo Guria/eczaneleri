@@ -1,0 +1,23 @@
+name: Parse and Deploy (Selfhosted)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-and-run:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install asdf & tools
+        uses: asdf-vm/actions/install@v3
+
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
+
+      - name: Run reusable workflow
+        uses: ./.github/workflows/parse-deploy.yml
+        with:
+          chrome_path: ${{ steps.setup-chrome.outputs.chrome-path }}
+          runner: self-hosted

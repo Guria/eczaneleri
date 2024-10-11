@@ -1,22 +1,17 @@
 name: Parse and Deploy
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0,5,10 6 * * *"
+  workflow_call:
+    inputs:
+      chrome_path:
+        required: true
+        type: string
 
 jobs:
-  gh-pages:
-    runs-on: ubuntu-22.04
+  parse-and-deploy:
+    runs-on: ${{ inputs.runner || 'ubuntu-22.04' }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install asdf & tools
-        uses: asdf-vm/actions/install@v3
-
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1
-        id: setup-chrome
 
       - name: Download dependencies
         run: gleam deps download
@@ -29,7 +24,7 @@ jobs:
           timeout_minutes: 2
           command: gleam run
         env:
-          CHROBOT_BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+          CHROBOT_BROWSER_PATH: ${{ inputs.chrome_path }}
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4

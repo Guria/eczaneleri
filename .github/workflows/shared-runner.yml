@@ -1,0 +1,28 @@
+name: Parse and Deploy (Ubuntu)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0,5,10 6 * * *"
+
+jobs:
+  setup-and-run:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Gleam
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: "27.0.1"
+          gleam-version: "1.5.1"
+          rebar3-version: "3.22.1"
+
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
+
+      - name: Run reusable workflow
+        uses: ./.github/workflows/reusable-parse-deploy.yml
+        with:
+          chrome_path: ${{ steps.setup-chrome.outputs.chrome-path }}
