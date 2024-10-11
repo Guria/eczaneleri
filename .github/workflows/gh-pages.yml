@@ -11,12 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Gleam
-        uses: erlef/setup-beam@v1
-        with:
-          otp-version: "27.0.1"
-          gleam-version: "1.4.1"
-          rebar3-version: "3"
+      - name: Install asdf & tools
+        uses: asdf-vm/actions/install@v3
 
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v1
