@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  setup-and-run:
+  parse-and-deploy:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
@@ -16,8 +16,27 @@ jobs:
         uses: browser-actions/setup-chrome@v1
         id: setup-chrome
 
-      - name: Run reusable workflow
-        uses: ./.github/workflows/parse-deploy.yml
+      - name: Download dependencies
+        run: gleam deps download
+
+      - name: Parse
+        uses: nick-fields/retry@v3.0.0
         with:
-          chrome_path: ${{ steps.setup-chrome.outputs.chrome-path }}
-          runner: self-hosted
+          max_attempts: 5
+          retry_wait_seconds: 15
+          timeout_minutes: 2
+          command: gleam run
+        env:
+          CHROBOT_BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./priv/static
+          publish_branch: gh-pages
+          force_orphan: true
+          user_name: "github-actions[bot]"
+          user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_message: "Update from GitHub Actions"
+          cname: eczaneleri.guria.dev
