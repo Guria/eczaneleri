@@ -14,9 +14,9 @@ jobs:
       - name: Set up Gleam
         uses: erlef/setup-beam@v1
         with:
-          otp-version: "27.0.1"
-          gleam-version: "1.6.0-rc1"
-          rebar3-version: "3.22.1"
+          otp-version: "27.3.3"
+          gleam-version: "1.10.0"
+          rebar3-version: "3.24.0"
 
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@v1
