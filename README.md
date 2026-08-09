@@ -49,8 +49,7 @@ There are two deploy workflows, both deploying `dist/` to Cloudflare Pages
   `src/data/*.json` files committed to the repo act only as a build-time
   baseline.
 
-Both workflows use the same `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID`
-secrets. To update the committed baseline (e.g. after adding a city), run
+Both workflows use the same `CLOUDFLARE_API_TOKEN` secret and `CLOUDFLARE_ACCOUNT_ID` repository variable. To update the committed baseline (e.g. after adding a city), run
 `npm run scrape -- <slug>` locally and commit the resulting file under
 `src/data/`.
 
