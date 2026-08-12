@@ -430,21 +430,51 @@ const points = ordered.map((p) => ({
     });
   }
 
-  // When the user shares location via the map's own control, reorder cards by
-  // distance and tell the list view so nearest mode stays in sync across tabs.
-  geolocate.on("geolocate", (e: { coords: GeolocationCoordinates }) => {
-    const { latitude, longitude } = e.coords;
-    applyNearest(latitude, longitude);
+  // Find-me should reorder the cards and fly to the nearest one exactly once,
+  // when the user engages geolocation. The control runs with
+  // trackUserLocation, so it keeps firing `geolocate` on every GPS sample —
+  // re-applying nearest on each one would yank the carousel back to the nearest
+  // card and override the user's swipe. `trackuserlocationstart` marks the
+  // start of a fresh lock; we consume that flag once and ignore the rest so
+  // swiping stays in the user's control.
+  let fullNearestPending = false;
+  // Last successful fix. MapLibre's passive-state re-engagement
+  // (BACKGROUND → ACTIVE_LOCK on a second tap of the crosshair) fires
+  // `trackuserlocationstart` + `userlocationfocus` and recenters from a cached
+  // position — but, unlike an actual GPS fix, it never fires `geolocate`. We
+  // replay the last fix on that path so the list stays in sync.
+  let lastFix: { lat: number; lng: number } | null = null;
+
+  function applyFix(lat: number, lng: number) {
+    lastFix = { lat, lng };
+    applyNearest(lat, lng);
     window.dispatchEvent(
       new CustomEvent("nearest:sync", {
-        detail: {
-          active: true,
-          lat: latitude,
-          lng: longitude,
-          source: "map",
-        },
+        detail: { active: true, lat, lng, source: "map" },
       }),
     );
+  }
+
+  geolocate.on("trackuserlocationstart", () => {
+    fullNearestPending = true;
+  });
+  geolocate.on("trackuserlocationend", () => {
+    fullNearestPending = false;
+  });
+
+  // A real GPS fix. Consumes the engagement flag on the first sample only.
+  geolocate.on("geolocate", (e: { coords: GeolocationCoordinates }) => {
+    if (!fullNearestPending) return;
+    fullNearestPending = false;
+    applyFix(e.coords.latitude, e.coords.longitude);
+  });
+
+  // Cached-position re-engagement from the passive state: no new GPS sample
+  // arrives, so consume the flag here with the last known fix instead.
+  geolocate.on("userlocationfocus", () => {
+    if (!fullNearestPending || !lastFix) return;
+    fullNearestPending = false;
+    applyFix(lastFix.lat, lastFix.lng);
   });
 
   // Recompute size when the map view becomes visible.
