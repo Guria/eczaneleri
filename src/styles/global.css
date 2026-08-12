@@ -138,28 +138,97 @@ a {
 }
 
 .lang {
-  display: inline-flex;
-  gap: 1px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 2px;
+  position: relative;
   flex: none;
 }
 
-.lang__link {
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.72rem;
+.lang__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.74rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
+  cursor: pointer;
+  list-style: none;
+}
+.lang__trigger::-webkit-details-marker {
+  display: none;
+}
+.lang__trigger:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
-.lang__link--active {
-  background: var(--accent-fill);
-  color: var(--on-accent);
+.lang__globe,
+.lang__chevron {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+.lang__globe {
+  color: var(--accent);
+}
+
+/* Rotate the chevron only while the menu is open. */
+details.lang[open] .lang__chevron {
+  transform: rotate(180deg);
+}
+.lang__chevron {
+  transition: transform 0.15s ease;
+}
+
+.lang__menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  z-index: 30;
+  min-width: 9rem;
+}
+
+.lang__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 0.82rem;
+}
+
+.lang__option:hover {
+  background: var(--surface);
+}
+
+.lang__option--active {
+  background: var(--accent-soft);
+  color: var(--accent-soft-text);
+  font-weight: 700;
+}
+
+.lang__code {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.lang__option--active .lang__code {
+  color: var(--accent-soft-text);
 }
 
 /* Signature: the glowing night-duty sign-mark. */
