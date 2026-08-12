@@ -430,9 +430,24 @@ const points = ordered.map((p) => ({
     });
   }
 
-  // When the user shares location via the map's own control, reorder cards by
-  // distance and tell the list view so nearest mode stays in sync across tabs.
+  // Find-me should reorder the cards and fly to the nearest one exactly once,
+  // when the user engages geolocation. The control runs with
+  // trackUserLocation, so it keeps firing `geolocate` on every GPS sample —
+  // re-applying nearest on each one would yank the carousel back to the nearest
+  // card and override the user's swipe. `trackuserlocationstart` marks the
+  // start of a fresh lock; we consume that flag on the first sample and ignore
+  // the rest so swiping stays in the user's control.
+  let fullNearestPending = false;
+  geolocate.on("trackuserlocationstart", () => {
+    fullNearestPending = true;
+  });
+  geolocate.on("trackuserlocationend", () => {
+    fullNearestPending = false;
+  });
+
   geolocate.on("geolocate", (e: { coords: GeolocationCoordinates }) => {
+    if (!fullNearestPending) return;
+    fullNearestPending = false;
     const { latitude, longitude } = e.coords;
     applyNearest(latitude, longitude);
     window.dispatchEvent(
