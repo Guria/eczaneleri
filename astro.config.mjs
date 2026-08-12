@@ -7,7 +7,7 @@ export default defineConfig({
   site: "https://eczane.apphane.dev",
   i18n: {
     defaultLocale: 'tr',
-    locales: ['tr', 'en', 'ru'],
+    locales: ['tr', 'en', 'ru', 'de'],
     routing: {
       prefixDefaultLocale: false,
     },
