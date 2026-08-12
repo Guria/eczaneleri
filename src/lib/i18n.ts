@@ -1,4 +1,4 @@
-export const locales = ["tr", "en", "ru"] as const;
+export const locales = ["tr", "en", "ru", "de"] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "tr";
 
@@ -7,6 +7,7 @@ const intlLocale: Record<Locale, string> = {
   tr: "tr-TR",
   en: "en-GB",
   ru: "ru-RU",
+  de: "de-DE",
 };
 
 export interface Strings {
@@ -14,6 +15,11 @@ export interface Strings {
   htmlLang: string;
   /** Native name for the language switcher. */
   nativeName: string;
+  /**
+   * Short code shown on the language-switcher trigger (uppercased two-letter
+   * tag, e.g. "TR"). Kept separate from htmlLang so the label can differ.
+   */
+  shortCode: string;
   pageTitle: string;
   metaDescription: string;
   onDutyCount: (n: number) => string;
@@ -62,6 +68,7 @@ export const translations: Record<Locale, Strings> = {
   tr: {
     htmlLang: "tr",
     nativeName: "Türkçe",
+    shortCode: "TR",
     pageTitle: "Antalya Nöbetçi Eczaneler",
     metaDescription:
       "Antalya nöbetçi eczaneler — adres, telefon ve yol tarifi.",
@@ -101,6 +108,7 @@ export const translations: Record<Locale, Strings> = {
   en: {
     htmlLang: "en",
     nativeName: "English",
+    shortCode: "EN",
     pageTitle: "Antalya On-Duty Pharmacies",
     metaDescription:
       "On-duty (night-time) pharmacies in Antalya — address, phone and directions.",
@@ -140,6 +148,7 @@ export const translations: Record<Locale, Strings> = {
   ru: {
     htmlLang: "ru",
     nativeName: "Русский",
+    shortCode: "RU",
     pageTitle: "Дежурные аптеки Антальи",
     metaDescription:
       "Дежурные (ночные) аптеки в Анталье — адрес, телефон и маршрут.",
@@ -175,6 +184,46 @@ export const translations: Record<Locale, Strings> = {
     footer:
       "Данные предоставлены Палатой фармацевтов Антальи. В экстренном случае позвоните в аптеку для подтверждения.",
     languageLabel: "Язык",
+  },
+  de: {
+    htmlLang: "de",
+    nativeName: "Deutsch",
+    shortCode: "DE",
+    pageTitle: "Antalya Notdienstapotheken",
+    metaDescription:
+      "Notdienstapotheken in Antalya — Adresse, Telefon und Routenbeschreibung.",
+    onDutyCount: (n) => `${n} Apotheken derzeit im Notdienst`,
+    lastUpdated: "Aktualisiert",
+    viewList: "Liste",
+    viewMap: "Karte",
+    viewGroupLabel: "Ansicht",
+    locate: "Nächste finden",
+    locating: "Standort wird ermittelt…",
+    locateSorted: "Nach Entfernung sortiert",
+    locateFailed: "Standort nicht ermittelbar, erneut versuchen",
+    locateUnsupported: "Standort nicht unterstützt",
+    showGrouped: "Nach Bezirk gruppieren",
+    nearestHeading: "Die nächsten Apotheken",
+    nearestAnnounce: (n) => `${n} Apotheken nach Entfernung sortiert`,
+    groupedAnnounce: "Apotheken wieder nach Bezirk gruppiert",
+    distanceSuffix: "entfernt",
+    call: "Anrufen",
+    whatsapp: "WhatsApp",
+    directionsGoogle: "Google Maps-Route",
+    directionsYandex: "Yandex",
+    directionsOsm: "OpenStreetMap",
+    searchOnMap: "Auf Karte suchen",
+    directionsShort: "Route",
+    directionsChooser: "Karten-App wählen",
+    close: "Schließen",
+    listAriaLabel: "Apothekenliste",
+    mapAriaLabel: "Kartenansicht",
+    mapRegionLabel: "Karte der Notdienstapotheken",
+    mapCardsLabel: "Apotheken auf der Karte",
+    mapSelectedAnnounce: (name) => `${name} ausgewählt`,
+    footer:
+      "Daten der Antalya Apothekerkammer. Rufen Sie im Notfall die Apotheke zur Bestätigung an.",
+    languageLabel: "Sprache",
   },
 };
 

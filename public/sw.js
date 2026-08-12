@@ -9,7 +9,7 @@
  *    they go straight to the network.
  */
 
-const VERSION = "v2";
+const VERSION = "v3";
 const SHELL_CACHE = `eczane-shell-${VERSION}`;
 const RUNTIME_CACHE = `eczane-runtime-${VERSION}`;
 
@@ -18,6 +18,7 @@ const SHELL_ASSETS = [
   "/antalya",
   "/en/antalya",
   "/ru/antalya",
+  "/de/antalya",
   "/manifest.webmanifest",
   "/favicon.ico",
   "/favicon.svg",
