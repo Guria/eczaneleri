@@ -113,8 +113,8 @@ const runtimeStrings = {
             <span class="cross" aria-hidden="true">+</span>
             {t.pageTitle}
           </h1>
-          <details class="lang">
-            <summary class="lang__trigger" aria-label={t.languageLabel}>
+          <details class="lang" aria-label={`${t.nativeName} (${t.languageLabel})`}>
+            <summary class="lang__trigger">
               <svg
                 class="lang__globe"
                 viewBox="0 0 24 24"
@@ -317,28 +317,44 @@ const runtimeStrings = {
       // a choice is made (the link then navigates normally).
       const langMenu = document.querySelector<HTMLDetailsElement>("details.lang");
       if (langMenu) {
+        // Dismissal handlers are hoisted so they can be torn down on every
+        // close — including closes triggered by re-clicking the <summary>,
+        // which never fire the handlers themselves. `defer` holds the pending
+        // registration so it can be cancelled if the menu closes before the
+        // timeout runs.
+        let onDoc: ((ev: MouseEvent) => void) | null = null;
+        let onKey: ((ev: KeyboardEvent) => void) | null = null;
+        let defer = 0;
+
+        const detach = () => {
+          if (onDoc) document.removeEventListener("click", onDoc);
+          if (onKey) document.removeEventListener("keydown", onKey);
+          if (defer) {
+            clearTimeout(defer);
+            defer = 0;
+          }
+        };
+
         langMenu.addEventListener("toggle", () => {
+          // Always tear down any handlers left over from a prior cycle first.
+          detach();
           if (!langMenu.open) return;
-          const onDoc = (ev: MouseEvent) => {
-            if (!langMenu.contains(ev.target as Node)) {
-              langMenu.open = false;
-              document.removeEventListener("click", onDoc);
-              document.removeEventListener("keydown", onKey);
-            }
+
+          onDoc = (ev: MouseEvent) => {
+            if (!langMenu.contains(ev.target as Node)) langMenu.open = false;
           };
-          const onKey = (ev: KeyboardEvent) => {
-            if (ev.key === "Escape") {
-              langMenu.open = false;
-              document.removeEventListener("click", onDoc);
-              document.removeEventListener("keydown", onKey);
-            }
+          onKey = (ev: KeyboardEvent) => {
+            if (ev.key === "Escape") langMenu.open = false;
           };
           // Defer so the toggle click itself isn't what closes it.
-          setTimeout(() => {
-            document.addEventListener("click", onDoc);
-            document.addEventListener("keydown", onKey);
+          defer = window.setTimeout(() => {
+            document.addEventListener("click", onDoc!);
+            document.addEventListener("keydown", onKey!);
           }, 0);
         });
+        // A toggle to closed (summary re-click, outside click, Escape) runs the
+        // branch above, which detaches. Cover the auto-close-after-choice path
+        // too.
         langMenu
           .querySelectorAll<HTMLAnchorElement>(".lang__option")
           .forEach((link) =>

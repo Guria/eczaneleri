@@ -206,7 +206,7 @@ export const translations: Record<Locale, Strings> = {
     nearestHeading: "Die nächsten Apotheken",
     nearestAnnounce: (n) => `${n} Apotheken nach Entfernung sortiert`,
     groupedAnnounce: "Apotheken wieder nach Bezirk gruppiert",
-    distanceSuffix: "Entfernung",
+    distanceSuffix: "entfernt",
     call: "Anrufen",
     whatsapp: "WhatsApp",
     directionsGoogle: "Google Maps-Route",
