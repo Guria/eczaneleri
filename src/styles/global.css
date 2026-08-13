@@ -637,9 +637,14 @@ main {
   }
 
   body.map-view .site-header,
-  body.map-view .toolbar,
-  body.map-view .site-footer {
+  body.map-view .toolbar {
     flex: none;
+  }
+
+  /* Give the map and its docked cards the full height: drop the footer from
+     the fixed map-view column entirely (it stays in the list view). */
+  body.map-view .site-footer {
+    display: none;
   }
 
   body.map-view main {
