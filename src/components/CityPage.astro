@@ -622,7 +622,10 @@ const runtimeStrings = {
           source: string;
         };
         if (d.source === "list") return;
-        if (d.active && !nearestActive && d.lat != null && d.lng != null) {
+        if (d.active && d.lat != null && d.lng != null) {
+          // Re-enter even when already active: a second find-me tap on the map
+          // refreshes ordering/distances from the new coordinates, keeping the
+          // list in sync with the map's freshly sorted cards.
           enterNearest(d.lat, d.lng, false);
         } else if (!d.active && nearestActive) {
           exitNearest(false);
