@@ -232,15 +232,6 @@ export function rootPath(locale: Locale): string {
   return locale === defaultLocale ? "/" : `/${locale}/`;
 }
 
-/** Format an ISO timestamp for display in Europe/Istanbul for the locale. */
-export function formatUpdatedAt(iso: string, locale: Locale): string {
-  return new Intl.DateTimeFormat(intlLocale[locale], {
-    dateStyle: "long",
-    timeStyle: "short",
-    timeZone: "Europe/Istanbul",
-  }).format(new Date(iso));
-}
-
 /** Intl tag for use in client-side number/date formatting. */
 export function getIntlLocale(locale: Locale): string {
   return intlLocale[locale];
