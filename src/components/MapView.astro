@@ -199,9 +199,17 @@ const points = ordered.map((p) => ({
     new maplibregl.NavigationControl({ showCompass: false }),
     "top-right",
   );
+  // One-shot geolocation: show the user's dot and accuracy circle once, sort
+  // cards by distance, and fly to the nearest — then stop. We deliberately do
+  // NOT use trackUserLocation: with tracking on, the first fix enters the
+  // ACTIVE_LOCK state and MapLibre recenters the camera on the user on every
+  // subsequent GPS sample, which fights our card flyTo (the dot snaps back to
+  // the user ~1s after each swipe). One-shot mode uses getCurrentPosition, so
+  // the camera is ours to pan freely afterward. The dot stays on the map
+  // because showUserLocation keeps the marker alive.
   const geolocate = new maplibregl.GeolocateControl({
     positionOptions: { enableHighAccuracy: true },
-    trackUserLocation: true,
+    trackUserLocation: false,
     showUserLocation: true,
   });
   map.addControl(geolocate, "top-right");
@@ -430,51 +438,18 @@ const points = ordered.map((p) => ({
     });
   }
 
-  // Find-me should reorder the cards and fly to the nearest one exactly once,
-  // when the user engages geolocation. The control runs with
-  // trackUserLocation, so it keeps firing `geolocate` on every GPS sample —
-  // re-applying nearest on each one would yank the carousel back to the nearest
-  // card and override the user's swipe. `trackuserlocationstart` marks the
-  // start of a fresh lock; we consume that flag once and ignore the rest so
-  // swiping stays in the user's control.
-  let fullNearestPending = false;
-  // Last successful fix. MapLibre's passive-state re-engagement
-  // (BACKGROUND → ACTIVE_LOCK on a second tap of the crosshair) fires
-  // `trackuserlocationstart` + `userlocationfocus` and recenters from a cached
-  // position — but, unlike an actual GPS fix, it never fires `geolocate`. We
-  // replay the last fix on that path so the list stays in sync.
-  let lastFix: { lat: number; lng: number } | null = null;
-
-  function applyFix(lat: number, lng: number) {
-    lastFix = { lat, lng };
-    applyNearest(lat, lng);
+  // When the user shares location via the map's own control, reorder cards by
+  // distance, fly to the nearest one, and tell the list view so nearest mode
+  // stays in sync across tabs. In one-shot mode `geolocate` fires exactly once
+  // per tap, so no re-entrancy guard is needed.
+  geolocate.on("geolocate", (e: { coords: GeolocationCoordinates }) => {
+    const { latitude, longitude } = e.coords;
+    applyNearest(latitude, longitude);
     window.dispatchEvent(
       new CustomEvent("nearest:sync", {
-        detail: { active: true, lat, lng, source: "map" },
+        detail: { active: true, lat: latitude, lng: longitude, source: "map" },
       }),
     );
-  }
-
-  geolocate.on("trackuserlocationstart", () => {
-    fullNearestPending = true;
-  });
-  geolocate.on("trackuserlocationend", () => {
-    fullNearestPending = false;
-  });
-
-  // A real GPS fix. Consumes the engagement flag on the first sample only.
-  geolocate.on("geolocate", (e: { coords: GeolocationCoordinates }) => {
-    if (!fullNearestPending) return;
-    fullNearestPending = false;
-    applyFix(e.coords.latitude, e.coords.longitude);
-  });
-
-  // Cached-position re-engagement from the passive state: no new GPS sample
-  // arrives, so consume the flag here with the last known fix instead.
-  geolocate.on("userlocationfocus", () => {
-    if (!fullNearestPending || !lastFix) return;
-    fullNearestPending = false;
-    applyFix(lastFix.lat, lastFix.lng);
   });
 
   // Recompute size when the map view becomes visible.
