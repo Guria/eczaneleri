@@ -139,8 +139,13 @@ const points = ordered.map((p) => ({
 <script id="map-data" type="application/json" set:html={JSON.stringify(points)} />
 
 <script>
-  import maplibregl from "maplibre-gl";
+  import * as maplibregl from "maplibre-gl";
   import "maplibre-gl/dist/maplibre-gl.css";
+  import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
+
+  // maplibre-gl v6 is ESM-only: under a bundler the worker URL must be wired
+  // up once (?worker&url emits a self-contained chunk; plain ?url does not).
+  maplibregl.setWorkerUrl(workerUrl);
 
   interface Point {
     name: string;
