@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# scraped data is generated at deploy time; never commit stale baselines
+src/data/*.json

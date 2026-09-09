@@ -40,18 +40,18 @@ There are two deploy workflows, both deploying `dist/` to Cloudflare Pages
 (project `eczane`) via `wrangler`:
 
 - **`.github/workflows/deploy.yml`** runs on push to `main` and on
-  `workflow_dispatch`. It builds and deploys only — it does not run the scraper,
-  so the site builds from whatever JSON is currently committed in `src/data/`.
+  `workflow_dispatch`. It scrapes fresh data into the working tree, builds, and
+  deploys.
 
 - **`.github/workflows/update-data.yml`** runs daily (and on `workflow_dispatch`).
-  It scrapes fresh data into the working tree, builds, and deploys — all without
-  committing. The daily refresh therefore produces no commits on `main`; the
-  `src/data/*.json` files committed to the repo act only as a build-time
-  baseline.
+  It scrapes fresh data into the working tree, builds, and deploys.
 
-Both workflows use the same `CLOUDFLARE_API_TOKEN` secret and `CLOUDFLARE_ACCOUNT_ID` repository variable. To update the committed baseline (e.g. after adding a city), run
-`npm run scrape -- <slug>` locally and commit the resulting file under
-`src/data/`.
+Both workflows use the same `CLOUDFLARE_API_TOKEN` secret and `CLOUDFLARE_ACCOUNT_ID` repository variable.
+
+Scraped JSON under `src/data/` is generated at deploy time and is
+git-ignored — never commit it as a baseline: a stale committed snapshot gets
+shipped to prod if a build ever runs before the scraper (seen live
+2026-09-09: a merge regressed prod to August data).
 
 ## Adding a city
 
@@ -61,6 +61,7 @@ Both workflows use the same `CLOUDFLARE_API_TOKEN` secret and `CLOUDFLARE_ACCOUN
    `scripts/scrape.ts` if the markup differs from Antalya's (`.ilce`,
    `.ilcebas`, `.nobetciDiv` structure).
 3. Run `npm run scrape -- <slug>` and verify `src/data/<slug>.json` looks
-   correct (plausible pharmacy count, mostly non-null coordinates).
+   correct (plausible pharmacy count, mostly non-null coordinates). The file
+   is git-ignored; it only needs to exist locally for dev/build.
 4. If you want the daily CI refresh to cover the new city, add a corresponding
    `npm run scrape -- <slug>` line to `.github/workflows/update-data.yml`.
