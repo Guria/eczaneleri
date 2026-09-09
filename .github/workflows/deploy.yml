@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: prod-deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -23,6 +27,15 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      # Deploy builds from live scraped data, not the committed baseline:
+      # the baseline can be weeks old, and a push deploy that skips the
+      # scrape silently overwrites the daily cron's fresh deploy (seen live
+      # 2026-09-09: merging a PR regressed prod to August data). A failed
+      # scrape fails the deploy loudly — silently shipping stale duty
+      # rosters is worse than a red build.
+      - name: Scrape pharmacy data
+        run: npm run scrape -- antalya
 
       - name: Build site
         run: npm run build

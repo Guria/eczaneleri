@@ -9,7 +9,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: update-pharmacy-data
+  # Shared with deploy.yml: the two prod deploy paths must queue, not race —
+  # otherwise a push deploy can overwrite a just-finished fresh-data deploy.
+  group: prod-deploy
   cancel-in-progress: false
 
 jobs:
