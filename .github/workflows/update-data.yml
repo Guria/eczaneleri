@@ -32,8 +32,8 @@ jobs:
 
       # Scrape fresh data into the working tree, then build and deploy from it.
       # The scraped JSON is never committed — the daily refresh produces no
-      # commits on main, mirroring how the gleam version deployed straight to
-      # gh-pages. src/data/*.json in the repo is only a build-time baseline.
+      # commits on main, and committed data baselines are forbidden (see
+      # README); src/data/*.json is git-ignored.
       - name: Scrape pharmacy data
         run: npm run scrape -- antalya
 
