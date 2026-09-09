@@ -1,3 +1,10 @@
+# Mise repairs missing/stale dependencies before every task in this checkout.
+[deps.npm]
+auto = true
+sources = ["package-lock.json"]
+outputs = ["node_modules/.package-lock.json"]
+run = "npm ci --no-audit --no-fund"
+
 [tasks.dev]
 description = "Start the Astro development server (binds localhost:4321 by default)"
 run = "npm run dev"
