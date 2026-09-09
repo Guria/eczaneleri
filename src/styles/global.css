@@ -368,6 +368,12 @@ main {
   display: none;
 }
 
+.no-data {
+  margin: 2rem 0;
+  text-align: center;
+  color: var(--muted);
+}
+
 /* The map wants room: on wider screens let the map view break out of the
    reading column so the map and its sidebar can breathe. */
 @media (min-width: 1000px) {

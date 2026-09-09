@@ -11,7 +11,6 @@ import {
 } from "../lib/i18n";
 import PharmacyCard from "./PharmacyCard.astro";
 import MapView from "./MapView.astro";
-import antalyaData from "../data/antalya.json";
 import "../styles/global.css";
 
 interface Props {
@@ -21,10 +20,18 @@ interface Props {
 const { locale } = Astro.props;
 const t = translations[locale];
 
-const data = antalyaData as CityData;
-const groups = groupByDistrict(data.pharmacies);
-const updated = formatUpdatedAt(data.updatedAt, locale);
-const total = data.pharmacies.length;
+// Scraped data is generated at deploy time and git-ignored, so resolve
+// whatever city JSON exists at build time instead of statically importing a
+// file a fresh clone won't have. Absent data builds as an empty state.
+const dataModules = import.meta.glob<{ default: CityData }>(
+  "../data/*.json",
+  { eager: true },
+);
+const data: CityData | undefined = dataModules["../data/antalya.json"]?.default;
+const pharmacies = data?.pharmacies ?? [];
+const groups = groupByDistrict(pharmacies);
+const updated = data ? formatUpdatedAt(data.updatedAt, locale) : null;
+const total = pharmacies.length;
 const site = Astro.site?.origin ?? "";
 
 // Strings needed by the client-side script (geolocation UI).
@@ -174,7 +181,7 @@ const runtimeStrings = {
           </details>
         </div>
         <p class="site-header__meta">
-          {t.onDutyCount(total)} · {t.lastUpdated}: {updated}
+          {t.onDutyCount(total)} · {t.lastUpdated}: {updated ?? "—"}
         </p>
       </div>
     </header>
@@ -208,6 +215,7 @@ const runtimeStrings = {
 
     <main>
       <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+      {!data && <p class="no-data">{t.noData}</p>}
       <section id="view-list" class="view" aria-label={t.listAriaLabel}>
         <div id="grouped">
           {
@@ -237,7 +245,7 @@ const runtimeStrings = {
 
       <section id="view-map" class="view" hidden aria-label={t.mapAriaLabel}>
         <MapView
-          pharmacies={data.pharmacies}
+          pharmacies={pharmacies}
           t={t}
           intlLocale={getIntlLocale(locale)}
         />

@@ -62,6 +62,8 @@ export interface Strings {
   mapSelectedAnnounce: (name: string) => string;
   footer: string;
   languageLabel: string;
+  /** Shown when no scraped data exists at build time. */
+  noData: string;
 }
 
 export const translations: Record<Locale, Strings> = {
@@ -74,6 +76,7 @@ export const translations: Record<Locale, Strings> = {
       "Antalya nöbetçi eczaneler — adres, telefon ve yol tarifi.",
     onDutyCount: (n) => `${n} nöbetçi eczane`,
     lastUpdated: "Son güncelleme",
+    noData: "Nöbetçi eczane verisi şu anda bulunmuyor.",
     viewList: "Liste",
     viewMap: "Harita",
     viewGroupLabel: "Görünüm seçimi",
@@ -114,6 +117,7 @@ export const translations: Record<Locale, Strings> = {
       "On-duty (night-time) pharmacies in Antalya — address, phone and directions.",
     onDutyCount: (n) => `${n} pharmacies on duty`,
     lastUpdated: "Last updated",
+    noData: "No pharmacy duty data is available right now.",
     viewList: "List",
     viewMap: "Map",
     viewGroupLabel: "View selection",
@@ -154,6 +158,7 @@ export const translations: Record<Locale, Strings> = {
       "Дежурные (ночные) аптеки в Анталье — адрес, телефон и маршрут.",
     onDutyCount: (n) => `Дежурят ${n} аптек`,
     lastUpdated: "Обновлено",
+    noData: "Данные о дежурных аптеках сейчас недоступны.",
     viewList: "Список",
     viewMap: "Карта",
     viewGroupLabel: "Выбор вида",
@@ -194,6 +199,7 @@ export const translations: Record<Locale, Strings> = {
       "Notdienstapotheken in Antalya — Adresse, Telefon und Routenbeschreibung.",
     onDutyCount: (n) => `${n} Apotheken im Notdienst`,
     lastUpdated: "Aktualisiert",
+    noData: "Derzeit sind keine Notdienstapotheken-Daten verfügbar.",
     viewList: "Liste",
     viewMap: "Karte",
     viewGroupLabel: "Ansicht",
