@@ -5,6 +5,7 @@ import {
   locales,
   type Locale,
   translations,
+  formatUpdatedAt,
   getIntlLocale,
   cityPath,
 } from "../lib/i18n";
@@ -22,6 +23,7 @@ const t = translations[locale];
 
 const data = antalyaData as CityData;
 const groups = groupByDistrict(data.pharmacies);
+const updated = formatUpdatedAt(data.updatedAt, locale);
 const total = data.pharmacies.length;
 const site = Astro.site?.origin ?? "";
 
@@ -172,7 +174,7 @@ const runtimeStrings = {
           </details>
         </div>
         <p class="site-header__meta">
-          {t.onDutyCount(total)}
+          {t.onDutyCount(total)} · {t.lastUpdated}: {updated}
         </p>
       </div>
     </header>

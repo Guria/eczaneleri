@@ -23,6 +23,7 @@ export interface Strings {
   pageTitle: string;
   metaDescription: string;
   onDutyCount: (n: number) => string;
+  lastUpdated: string;
   viewList: string;
   viewMap: string;
   viewGroupLabel: string;
@@ -72,6 +73,7 @@ export const translations: Record<Locale, Strings> = {
     metaDescription:
       "Antalya nöbetçi eczaneler — adres, telefon ve yol tarifi.",
     onDutyCount: (n) => `${n} nöbetçi eczane`,
+    lastUpdated: "Son güncelleme",
     viewList: "Liste",
     viewMap: "Harita",
     viewGroupLabel: "Görünüm seçimi",
@@ -111,6 +113,7 @@ export const translations: Record<Locale, Strings> = {
     metaDescription:
       "On-duty (night-time) pharmacies in Antalya — address, phone and directions.",
     onDutyCount: (n) => `${n} pharmacies on duty`,
+    lastUpdated: "Last updated",
     viewList: "List",
     viewMap: "Map",
     viewGroupLabel: "View selection",
@@ -150,6 +153,7 @@ export const translations: Record<Locale, Strings> = {
     metaDescription:
       "Дежурные (ночные) аптеки в Анталье — адрес, телефон и маршрут.",
     onDutyCount: (n) => `Дежурят ${n} аптек`,
+    lastUpdated: "Обновлено",
     viewList: "Список",
     viewMap: "Карта",
     viewGroupLabel: "Выбор вида",
@@ -189,6 +193,7 @@ export const translations: Record<Locale, Strings> = {
     metaDescription:
       "Notdienstapotheken in Antalya — Adresse, Telefon und Routenbeschreibung.",
     onDutyCount: (n) => `${n} Apotheken im Notdienst`,
+    lastUpdated: "Aktualisiert",
     viewList: "Liste",
     viewMap: "Karte",
     viewGroupLabel: "Ansicht",
@@ -230,6 +235,15 @@ export function cityPath(locale: Locale): string {
 /** Root path for a given locale. */
 export function rootPath(locale: Locale): string {
   return locale === defaultLocale ? "/" : `/${locale}/`;
+}
+
+/** Format an ISO timestamp for display in Europe/Istanbul for the locale. */
+export function formatUpdatedAt(iso: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(intlLocale[locale], {
+    dateStyle: "long",
+    timeStyle: "short",
+    timeZone: "Europe/Istanbul",
+  }).format(new Date(iso));
 }
 
 /** Intl tag for use in client-side number/date formatting. */
