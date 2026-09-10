@@ -1,5 +1,6 @@
 ---
 import { locales, type Locale, cityPath } from "../../lib/i18n";
+import Analytics from "../../components/Analytics.astro";
 
 // This page's locale.
 const here: Locale = "de";
@@ -36,5 +37,6 @@ for (const loc of locales) {
   </head>
   <body>
     <p><a href="/de/antalya">Antalya Notdienstapotheken</a></p>
+    <Analytics />
   </body>
 </html>

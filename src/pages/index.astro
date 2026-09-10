@@ -2,6 +2,7 @@
 // Single-city site for now; send visitors straight to Antalya.
 // Designed to become a city picker once more provinces are added.
 import { locales, type Locale, cityPath } from "../lib/i18n";
+import Analytics from "../components/Analytics.astro";
 
 // This page's locale.
 const here: Locale = "tr";
@@ -38,5 +39,6 @@ for (const loc of locales) {
   </head>
   <body>
     <p><a href="/antalya">Antalya Nöbetçi Eczaneler</a></p>
+    <Analytics />
   </body>
 </html>

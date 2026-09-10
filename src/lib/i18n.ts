@@ -62,6 +62,10 @@ export interface Strings {
   mapSelectedAnnounce: (name: string) => string;
   footer: string;
   languageLabel: string;
+  /** Opt-in ask inside the directions dialog. */
+  telemetryOptIn: string;
+  telemetryDetailsLabel: string;
+  telemetryDetails: string;
 }
 
 export const translations: Record<Locale, Strings> = {
@@ -104,6 +108,11 @@ export const translations: Record<Locale, Strings> = {
     footer:
       "Veriler Antalya Eczacı Odası kaynaklıdır. Acil durumda eczaneyi arayarak teyit ediniz.",
     languageLabel: "Dil",
+    telemetryOptIn:
+      "Hizmeti desteklemek için anonim kullanım istatistiklerini paylaşmak istiyorum.",
+    telemetryDetailsLabel: "Neler paylaşılır?",
+    telemetryDetails:
+      "Hangi sayfaların görüntülendiği ve hangi düğmelerin kullanıldığı, tarayıcı ve cihaz türü. Yazdığınız içerikler, ad, adres veya telefon toplanmaz. Veriler yalnızca bu sitenin istatistikleri için AB'deki PostHog sunucularında işlenir. Kapatınca cihazınızda saklanan her şey anında silinir.",
   },
   en: {
     htmlLang: "en",
@@ -144,6 +153,11 @@ export const translations: Record<Locale, Strings> = {
     footer:
       "Data sourced from the Antalya Chamber of Pharmacists. In an emergency, call the pharmacy to confirm.",
     languageLabel: "Language",
+    telemetryOptIn:
+      "I want to support the service by sharing anonymous usage statistics.",
+    telemetryDetailsLabel: "What is shared?",
+    telemetryDetails:
+      "Which pages are viewed and which buttons are used, plus browser and device type. Nothing you type, and no names, addresses or phone numbers. Data is processed on PostHog servers in the EU, only for this site's usage statistics. Switching off erases everything stored on your device immediately.",
   },
   ru: {
     htmlLang: "ru",
@@ -184,6 +198,11 @@ export const translations: Record<Locale, Strings> = {
     footer:
       "Данные предоставлены Палатой фармацевтов Антальи. В экстренном случае позвоните в аптеку для подтверждения.",
     languageLabel: "Язык",
+    telemetryOptIn:
+      "Хочу поддержать сервис, делясь анонимной статистикой использования.",
+    telemetryDetailsLabel: "Что передаётся?",
+    telemetryDetails:
+      "Какие страницы просмотрены и какие кнопки нажаты, тип браузера и устройства. Вводимый текст, имена, адреса и телефоны не собираются. Данные обрабатываются на серверах PostHog в ЕС только для статистики этого сайта. При выключении всё сохранённое на устройстве удаляется сразу.",
   },
   de: {
     htmlLang: "de",
@@ -224,6 +243,11 @@ export const translations: Record<Locale, Strings> = {
     footer:
       "Daten der Antalya Apothekerkammer. Rufen Sie im Notfall die Apotheke zur Bestätigung an.",
     languageLabel: "Sprache",
+    telemetryOptIn:
+      "Ich möchte den Service unterstützen, indem ich anonyme Nutzungsstatistiken teile.",
+    telemetryDetailsLabel: "Was wird geteilt?",
+    telemetryDetails:
+      "Welche Seiten angesehen und welche Schaltflächen benutzt werden, dazu Browser- und Gerätetyp. Keine Eingaben, keine Namen, Adressen oder Telefonnummern. Verarbeitung auf PostHog-Servern in der EU, ausschließlich für Nutzungsstatistik dieser Seite. Beim Ausschalten wird alles auf dem Gerät Gespeicherte sofort gelöscht.",
   },
 };
 

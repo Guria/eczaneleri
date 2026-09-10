@@ -10,6 +10,7 @@ import {
   cityPath,
 } from "../lib/i18n";
 import PharmacyCard from "./PharmacyCard.astro";
+import Analytics from "./Analytics.astro";
 import MapView from "./MapView.astro";
 import antalyaData from "../data/antalya.json";
 import "../styles/global.css";
@@ -294,6 +295,17 @@ const runtimeStrings = {
             {t.directionsOsm}
           </a>
         </div>
+        <div class="sheet__telemetry">
+          <input type="checkbox" role="switch" id="telemetry-consent" />
+          <label for="telemetry-consent" class="sheet__switch"></label>
+          <div class="sheet__telemetry__body">
+            <label for="telemetry-consent">{t.telemetryOptIn}</label>
+            <details class="sheet__telemetry__details">
+              <summary>{t.telemetryDetailsLabel}</summary>
+              <p>{t.telemetryDetails}</p>
+            </details>
+          </div>
+        </div>
       </div>
     </dialog>
 
@@ -484,6 +496,36 @@ const runtimeStrings = {
         directionsTrigger = null;
       });
 
+      // --- Telemetry opt-in ("support the service") ---
+      // Default off: Analytics.astro loads nothing until this flips on.
+      // Both directions happen live — no reload, the dialog stays open.
+      const telemetryInput = document.getElementById(
+        "telemetry-consent",
+      ) as HTMLInputElement | null;
+      if (telemetryInput) {
+        try {
+          telemetryInput.checked =
+            localStorage.getItem("eczane.telemetry") === "on";
+        } catch {}
+        telemetryInput.addEventListener("change", () => {
+          try {
+            localStorage.setItem(
+              "eczane.telemetry",
+              telemetryInput.checked ? "on" : "off",
+            );
+            if (telemetryInput.checked) {
+              window.__eczaneInitPosthog?.();
+            } else {
+              // Stop captures now, then wipe everything PostHog stored.
+              window.posthog?.opt_out_capturing();
+              for (const key of Object.keys(localStorage)) {
+                if (key.startsWith("ph_")) localStorage.removeItem(key);
+              }
+            }
+          } catch {}
+        });
+      }
+
       document.addEventListener("keydown", (ev) => {
         if (ev.key === "Escape" && directionsDialog?.open) {
           closeDirections();
@@ -657,5 +699,6 @@ const runtimeStrings = {
         );
       });
     </script>
+    <Analytics />
   </body>
 </html>

@@ -1,0 +1,53 @@
+---
+// Opt-in PostHog, default off.
+//
+// The ask lives where it has context: a checkbox in the directions dialog
+// ("support the service by sharing anonymous usage statistics"). Until the
+// visitor checks it, no analytics script loads and nothing is stored or
+// sent. Checking it is explicit, informed consent (GDPR Art. 4(11) shape);
+// unchecking stops capture and wipes all PostHog storage immediately.
+//
+// Init happens live (no reload) so the dialog flow is never interrupted:
+// the checkbox handler calls window.__eczaneInitPosthog() on check.
+//
+// DNT/GPC is honored as a standing opt-out even over a stored "on".
+const key = import.meta.env.PUBLIC_POSTHOG_KEY ?? "";
+---
+
+{
+  key && (
+    <script is:inline define:vars={{ key }}>
+      window.__eczaneInitPosthog = function () {
+        if (window.posthog) return;
+        const s = document.createElement("script");
+        s.src = "/ingest/static/array.js";
+        s.async = true;
+        s.onload = () => {
+          posthog.init(key, {
+            api_host: "/ingest",
+            persistence: "localStorage",
+            autocapture: true,
+            capture_pageview: true,
+            disable_session_recording: true,
+            disable_surveys: true,
+            person_profiles: "identified_only",
+          });
+        };
+        document.head.appendChild(s);
+      };
+
+      const dnt =
+        navigator.doNotTrack === "1" ||
+        window.doNotTrack === "1" ||
+        navigator.doNotTrack === "yes" ||
+        navigator.globalPrivacyControl === true;
+
+      let optedIn = false;
+      try {
+        optedIn = localStorage.getItem("eczane.telemetry") === "on";
+      } catch {}
+
+      if (!dnt && optedIn) window.__eczaneInitPosthog();
+    </script>
+  )
+}
